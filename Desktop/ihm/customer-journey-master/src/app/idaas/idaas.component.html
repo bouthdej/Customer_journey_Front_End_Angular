@@ -1,0 +1,62 @@
+<button (click)="CreateIdnetity()">Create Identity</button>
+<button (click)="UpdateProfil()">Update Profile</button>
+<button (click)="ChangePassword()">Change Password</button>on
+<!--<button (click)="attach()"> Attach</button>-->
+
+<hr>
+<div #parent id="parentdiv">
+    <div #creatingidentity cdkDrag (cdkDragMoved)="updatePosition()" [cdkDragFreeDragPosition]="dragPosition"style="display: none; ;border: solid; width: 200px; height: 400px;">
+      <form #getIdentifier="ngForm" (ngSubmit)="submitGetIdentifier(getIdentifier)" novalidate>
+        <p>Create Identity</p><hr>
+        <p>Identifier</p>
+        <input type="text" name="userEmail" #mail="ngModel" minlength="05" maxlength="50" pattern="^\w+.*@\w+.\w+$" ngModel email required>
+        <p>Password:</p>
+        <input type="password" name="password" #passowrd="ngModel" minlength="8" maxlength="15" ngModel email required >
+        <p>Profil:</p>
+        <label> Firstname</label><input type="text" name="firstname" #firstname="ngModel" ngModel firstname required><br>
+        <label> Lastname</label><input type="text" name="lastname" #lastname="ngModel" ngModel lastname required>
+        <hr>
+        <p>
+          <button type="submit" [disabled]="!getIdentifier.valid">Submit</button>
+        </p>
+    
+      </form>
+    </div>
+    <div>
+        <div #changeprofile cdkDrag (cdkDragMoved)="updatePosition()" [cdkDragFreeDragPosition]="dragPosition"style="display: none; ;border: solid; width: 200px; height: 400px;">
+            <form #getIdentifier="ngForm" (ngSubmit)="submitGetIdentifier(getIdentifier)" novalidate>
+                <p>Change profil</p><hr>
+                <p>Identifier</p>
+                <input type="text" name="userEmail" #mail="ngModel" minlength="05" maxlength="50" pattern="^\w+.*@\w+.\w+$" ngModel email required>
+                <label> Firstname</label><input type="text" name="firstname" #firstname="ngModel" ngModel firstname required><br>
+                <label> Lastname</label><input type="text" name="lastname" #lastname="ngModel" ngModel lastname required>
+                <hr>
+                <p>
+                  <button type="submit" [disabled]="!getIdentifier.valid">Submit</button>
+                </p>
+            
+              </form>
+            </div>
+    
+        
+    </div>
+    <div>
+        <div #changepassword cdkDrag (cdkDragMoved)="updatePosition()" [cdkDragFreeDragPosition]="dragPosition"style="display: none; ;border: solid; width: 200px; height: 400px;">
+            <form #getIdentifier="ngForm" (ngSubmit)="submitGetIdentifier(getIdentifier)" novalidate>
+                <p>Change password</p><hr>
+                <label> Old password</label><input type="text" name="oldpassword" #firstname="ngModel" ngModel  oldpassword required><br>
+                <label> New password</label><input type="text" name="newpassword" #lastname="ngModel" ngModel newpassword required>
+                <hr>
+                <p>
+                  <button type="submit" [disabled]="!getIdentifier.valid">Change</button>
+                </p>
+            
+              </form>
+        </div>
+
+    </div>
+  
+    <!--<div cdkDrag  #changeprofile (cdkDragMoved)="updatePosition()" style="border: solid; width: 75px; height: 75px;">Ending Element</div>-->
+  </div>
+
+    

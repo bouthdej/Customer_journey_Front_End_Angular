@@ -1,0 +1,37 @@
+<button (click)="addNewElem()">Log in</button>
+<button (click)="attach()"> Attach</button>
+<app-idaas></app-idaas>
+<hr>
+<div #parent id="parentdiv">
+  <div #startingElement cdkDrag (cdkDragMoved)="updatePosition()" [cdkDragFreeDragPosition]="dragPosition"style="display: none; ;border: solid; width: 200px; height: 400px;">
+    <form #getIdentifier="ngForm" (ngSubmit)="submitGetIdentifier(getIdentifier)" novalidate>
+      <p>Log in</p><hr>
+      <p>Email:</p>
+      <input type="text" name="userEmail" #mail="ngModel" minlength="05" maxlength="50" pattern="^\w+.*@\w+.\w+$" ngModel email required>
+      <div *ngIf="!mail?.valid && (mail?.password||mail?.dirty || mail?.touched)">
+        Invalid Emil adress: <br>
+        <div *ngIf="mail.errors.required">
+          Email adress is required
+       </div>
+       <div *ngIf="mail.errors.minlength">
+        Email adress Minimum Length is {{mail.errors.minlength?.requiredLength}}
+       </div>
+       <div *ngIf="mail.errors.maxlength">
+        Email adress Mawimum Length is {{mail.errors.minlength?.requiredLength}}
+       </div>
+     </div>
+      <p>Password:</p>
+      <input type="password" name="password" #passowrd="ngModel" minlength="8" maxlength="15" ngModel email required >
+      
+      <hr>
+      <p>
+        <button type="submit" [disabled]="!getIdentifier.valid">Submit</button>
+      </p>
+      <pre>Value    : {{mail.value}} </pre>
+      <pre>valid    : {{mail.valid}} </pre>
+      <pre>invalid  : {{mail.invalid}} </pre>
+      <pre>touched  : {{mail.touched}} </pre>
+    </form>
+  </div>
+  <div cdkDrag  #endingElement (cdkDragMoved)="updatePosition()" style="border: solid; width: 75px; height: 75px;">Ending Element</div>  
+</div>
