@@ -1,0 +1,75 @@
+navlist
+{
+  background-color: rgb(243, 243, 243);
+}
+
+.navliste
+{
+  background-color: rgb(243, 243, 243);
+}
+
+
+
+
+.logodiv
+{
+    display:flex;
+    width: 100px;
+    height: auto;
+    justify-content:center;
+    align-items:center;
+}
+
+
+img
+ {
+        width: 60px;
+        height: 60px;
+        border-radius: 100px;
+        float: left;
+        margin-left: -3px;
+        margin-right: 10px;
+ }
+
+
+ .example-spacer {
+    flex: 1 1 auto;
+  }
+  .example-container {
+    height: 500px;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+  }
+  .example-sidenav-content {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+  }
+  .example-sidenav {
+     user-select: none;
+  }
+  .full-width {
+    width: 100%;
+  }
+  .menu-button {
+    transition: 300ms ease-in-out;
+    transform: rotate(0deg);
+  }
+  .menu-button.rotated {
+    transform: rotate(180deg);
+  }
+  .submenu {
+    overflow-y: hidden;
+    transition: transform 300ms ease;
+    transform: scaleY(0);
+    transform-origin: top;
+    padding-left: 30px;
+  }
+  .submenu.expanded {
+    transform: scaleY(1);
+  }
+
+  .mat-sidenav
+  {
+    width: 280px;
+  }
