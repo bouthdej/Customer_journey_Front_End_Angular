@@ -125,11 +125,14 @@ export class SgidfComponent implements OnInit, OnDestroy {
       language:['fr']
     }),
     identifiers: this.formBuilder.array([
-      // this.formBuilder.group({
-      //   provider:[''],
-      //   type:[''],
-      //   value: ['']
-      // })
+      this.formBuilder.group({
+        provider:['sandbox'],
+        type:['LOGIN'],
+        value: ['bouthsayna.djebali@sofrecom.com']
+      })
+      // "provider": "sandbox",
+      // "type": "LOGIN",
+      // "value": "bouthayna.djebali@sofrecom.com"
     ]),
     password:this.formBuilder.group({
       value:['', [Validators.required, Validators.minLength(3)]]
@@ -139,7 +142,11 @@ export class SgidfComponent implements OnInit, OnDestroy {
     //   isPassword:[false],
     //   type:['',[]],
     // }),
-    contactIdentifiers:  this.formBuilder.array([])
+    contactIdentifiers:  this.formBuilder.array([{
+        value:'bouthayna.djebali@sofrecom.com',
+        isPassword:false,
+        type:'email',
+      }])
   })
 
   // Create user -Full identity- forms

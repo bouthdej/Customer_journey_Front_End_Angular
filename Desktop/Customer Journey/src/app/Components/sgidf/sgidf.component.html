@@ -118,8 +118,9 @@
                   <!-- Form group password -->
                   
                   <!-- Form group contactIdentifiers -->
-                  <div *ngFor="let comp of myForm.get('companies').controls; let i=index">
-                  <div formGroupName="contactIdentifiers">
+                  <!-- <div *ngFor="let identifier of createFullIdentity.get('identifiers'); let i=index"> -->
+                  <!-- <div formGroupName="contactIdentifiers"> -->
+                  <div formControlName="contactIdentifiers[0]">
                       <h4>4-Contact identifier</h4><hr>
                       <p>
                         <select  class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" formControlName="type">
@@ -131,7 +132,7 @@
                         <input type="text" formControlName="value" class="input-Form">
                       </p>
                     </div>
-                  </div>
+                  <!-- </div> -->
                 </div>
                 <hr>
                 <div class="col-6 mx-auto">
