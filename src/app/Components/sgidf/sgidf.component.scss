@@ -1,0 +1,94 @@
+.parentdiv-boundary {
+    position: static;
+    width: 100%;
+    height: 600px;
+}
+
+.titleCreateIdentity {
+    text-align: center;
+}
+
+
+.form-label {
+    margin-left: 10px;
+}
+
+.input-Form {
+
+    margin-left: 20px;
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  
+}
+.form-select
+{
+    margin-left: 20px;
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid rgb(177, 11, 11);
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.btn btn-info {
+margin-left: 40px;
+
+}
+
+
+.getIdentifierElement {
+    display: none;
+    position: absolute;
+    top: 0;
+    border: solid;
+    width: max-content;
+    height: max-content;
+    z-index: 1;
+}
+
+.createIdenifierElement {
+    display: none;
+    position: absolute;
+    top: 0;
+    border: solid;
+    width: 10%;
+    height:10%;
+    z-index: 2;
+}
+
+.getIdentityElement {
+    display: none;
+    position: absolute;
+    top: 0;
+    border: solid;
+    width: max-content;
+    height: max-content;
+    z-index: 3;
+}
+
+.getContactIdentifierElement {
+    display: none;
+    position: absolute;
+    top: 0;
+    border: solid;
+    width: max-content;
+    height: max-content;
+    z-index: 4;
+}
+
+.updateIdentityPwdElement {
+    display: none;
+    position: absolute;
+    top: 0;
+    border: solid;
+    width: max-content;
+    height: max-content;
+    z-index: 5;
+}
