@@ -5,7 +5,7 @@ import { NotFoundComponent } from './Components/not-found/not-found.component';
 import { WelcomeComponent } from './Components/welcome/welcome.component';
 import { SgidfComponent } from './Components/sgidf/sgidf.component';
 import { AuthGuard } from './auth.guard';
-import { AdminRoutingModule } from './admin/admin-routing.module';
+// import { AdminRoutingModule } from './admin/admin-routing.module';
 import { HomeComponent } from './admin/home/home.component';
 
 const routes: Routes = [
