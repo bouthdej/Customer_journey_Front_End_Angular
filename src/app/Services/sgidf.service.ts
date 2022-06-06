@@ -55,6 +55,8 @@ export class SgidfService {
   }
 
   updateContactIdentifiers(data){
+    console.log(data)
+
     let header= new HttpHeaders()
     .set('content-type', 'application/json')
     let updateContactIdentifier = `${this.backEndUrl}/contactIdentifier`;
@@ -66,9 +68,10 @@ export class SgidfService {
       return this._http.post(`${updateContactIdentifier}/add`, data, {'headers':header}).pipe(
         retry(3)
       );
-    }else if(data.methode=="update"){
-      return this._http.patch(`${updateContactIdentifier}/update`, data, {'headers':header}).pipe(
-        retry(3)
+    }else if(data.methode=="update")
+     {
+     return this._http.patch(`${updateContactIdentifier}/update`, data, {'headers':header}).pipe(
+      retry(3)
       );
     }
   }

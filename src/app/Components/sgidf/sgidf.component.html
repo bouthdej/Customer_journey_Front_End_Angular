@@ -75,9 +75,9 @@
                       <option *ngFor="let civility of civilitys" [ngValue]="civility.id"> {{civility.id}} </option>
                     </select>
                     <br>
-                    <label for="formGroupExampleInput" class="form-label">avatar :</label>
+                    <!-- <label for="formGroupExampleInput" class="form-label">avatar :</label>
                     <input type="text" name="profileavatar" formControlName="avatar" class="input-Form">
-                    <br>
+                    <br> -->
                     <label for="formGroupExampleInput" class="form-label">timeZone :</label>
                     <input type="text" name="profiletimeZone" formControlName="timeZone" class="input-Form">
                     <br>
@@ -187,19 +187,22 @@
                     class="input-Form"> Delete contact Identifier
                 </p>
                 <div *ngIf="action!='delete'">
-                  <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+                  <!-- <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
                     <option selected>Select Type</option>
                     <option *ngFor="let contactIdentifierType of contactIdentifierTypes"
                       [ngValue]="contactIdentifierType.name"> {{contactIdentifierType.name}} </option>
-                  </select>
+                  </select> -->
                   <div>
                     <label for="formGroupExampleInput" class="form-label">Password :</label>
                     <input type="checkbox" id="isPassword" name="isPassword" formControlName="isPassword"
                       class="input-Form">
                   </div>
                   <div>
+                    <p>Type:</p>
+                    <input type="email" formControlName="type" class="input-Form">
+
                     <p>Value:</p>
-                    <input type="text" formControlName="value" class="input-Form">
+                    <input type="email" formControlName="value" class="input-Form">
                   </div>
                 </div>
                 <!-- <div>
@@ -228,7 +231,7 @@
             </div>
             <div #getIdentifiers class="col-sm-2 col-md-4 col-lg-3 bg-primary" cdkDrag (cdkDragMoved)="updatePosition()"
               cdkDragBoundary=".parentdiv-boundary">
-              <!--               <form [formGroup]="updateIdentityPwd" (ngSubmit)="updateIdentityPwd(updateIdentityPwd)" novalidate>
+              <!--<form [formGroup]="updateIdentityPwd" (ngSubmit)="updateIdentityPwd(updateIdentityPwd)" novalidate>
  
               <form [formGroup]="updateIdentityPwd" novalidate>
                 <h4 class="titleCreateIdentity">Update Identity password</h4>

@@ -192,9 +192,10 @@ export class SgidfComponent implements OnInit, OnDestroy {
     type:  ['', [Validators.required, Validators.email || Validators.minLength(8)]],
     value:  ['', [Validators.required, Validators.email || Validators.minLength(8)]],
     provider: ['', [Validators.required, Validators.email || Validators.minLength(8)]],
-
   })
 
+
+  
 
   // Create user -Full identity- forms
   getIdentifier = this.formBuilder.group({
@@ -244,13 +245,22 @@ export class SgidfComponent implements OnInit, OnDestroy {
   }
 
   contactIdentifiersFn(form: FormGroup) {
+            console.log("====>",form.value)
+
     if (this.action !== "") {
       this.SGIDFSvc.updateContactIdentifiers({
         methode: this.action,
         body: form.value
       }).subscribe(contactIdentifiersFnRes => {
         console.log(contactIdentifiersFnRes)
-      })
+      },
+      error => {
+        console.log('===>',error);
+        
+      }
+      
+      
+      )
     } else {
       this.error = true
       this.errorMsg = "Please choose action"
