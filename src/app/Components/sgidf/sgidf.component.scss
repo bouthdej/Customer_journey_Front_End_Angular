@@ -16,7 +16,7 @@
 .input-Form {
 
     margin-left: 20px;
-    width: 100%;
+    width: 140px;
     padding: 12px 20px;
     margin: 8px 0;
     display: inline-block;
@@ -25,10 +25,22 @@
     box-sizing: border-box;
   
 }
+
+.input-radio {
+    width: max-content;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin: 10px;
+}
+
 .form-select
 {
     margin-left: 20px;
-    width: 100%;
+    width: 130px;
     padding: 12px 20px;
     margin: 8px 0;
     display: inline-block;
@@ -37,9 +49,13 @@
     box-sizing: border-box;
 }
 
+.createIdentityElement{
+    width: 500px;;
+    padding: 5px;
+}
+
 .btn btn-info {
 margin-left: 40px;
-
 }
 
 

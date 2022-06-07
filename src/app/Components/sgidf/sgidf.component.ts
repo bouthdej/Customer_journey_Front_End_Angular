@@ -54,16 +54,13 @@ export class SgidfComponent implements OnInit, OnDestroy {
 
   //Create identity variables:
   civilitys = [{
+    name:"M.",
     id: "1"
   },
   {
+    name:"Mme",
     id: "2"
-  },
-  {
-    id: "3"
   }
-
-
   ]
   genders = [
     {

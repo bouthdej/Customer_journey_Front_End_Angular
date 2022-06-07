@@ -53,93 +53,65 @@
           <!-- this div will later include all the inserted forms -->
           <div>
             <!-- Create Identity -->
-            <div #createIdentityElement class="col-sm-2 col-md-4 col-lg-3 bg-primary" cdkDrag
+            <div #createIdentityElement class="createIdentityElement col-sm-2 col-md-4 col-lg-3 bg-primary mt-2" cdkDrag
               (cdkDragMoved)="updatePosition()" cdkDragBoundary=".parentdiv-boundary">
               <form [formGroup]="createFullIdentity" (ngSubmit)="createNewUser(createFullIdentity)" novalidate>
-                <br>
-                <h4 class="titleCreateIdentity"> Create identity</h4>
-                <hr>
+                <h4 class="titleCreateIdentity"> Create identity</h4><hr>
                 <!-- Create Identity Profile-->
                 <div>
                   <!-- Form group Profile -->
                   <div formGroupName="profile">
                     <h4>1- Profile</h4>
-                    <hr>
-                    <!-- <label for="formGroupExampleInput" class="form-label">displayName :</label>
-                    <input type="text" name="profiledisplayName" formControlName="displayName" class="input-Form">
-                    <br> -->
-                    <label for="formGroupExampleInput" class="form-label">civility :</label>
-                    <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example"
-                      formControlName="civility">
-                      <option selected>Select Civility</option>
-                      <option *ngFor="let civility of civilitys" [ngValue]="civility.id"> {{civility.id}} </option>
-                    </select>
-                    <br>
-                    <!-- <label for="formGroupExampleInput" class="form-label">avatar :</label>
-                    <input type="text" name="profileavatar" formControlName="avatar" class="input-Form">
-                    <br> -->
-                    <!-- <label for="formGroupExampleInput" class="form-label">timeZone :</label>
-                    <input type="text" name="profiletimeZone" formControlName="timeZone" class="input-Form">
-                    <br> -->
-                    <!-- <label for="formGroupExampleInput" class="form-label">language :</label>
-                    <input type="text" name="profilelanguage" formControlName="language" class="input-Form">
-                    <br> -->
-                    <label for="formGroupExampleInput" class="form-label">First name :</label>
-                    <input type="text" name="profileFirstName" formControlName="firstName" class="input-Form">
-                    <br>
-                    <label for="formGroupExampleInput" class="form-label">Last name :</label>
-                    <input type="text" name="profileLastName" formControlName="lastName" class="input-Form">
-                    <br>
-                    <label for="formGroupExampleInput" class="form-label">BirthDay :</label>
-                    <input type="date" name="profileBirthDate" formControlName="birthdate" class="input-Form">
-                    <br>
-                    <label for="formGroupExampleInput" class="form-label">Gender</label>
-                    <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example"
-                      formControlName="gender">
-                      <option selected>Select Gender</option>
-                      <option *ngFor="let gender of genders" [ngValue]="gender.id"> {{gender.name}} </option>
-                    </select>
+                    <p>
+                      <label for="formGroupExampleInput" class="form-label">First name: &nbsp;</label>
+                      <input type="text" name="profileFirstName" formControlName="firstName" class="input-Form">
+                      <label for="formGroupExampleInput" class="form-label">Last name: &nbsp;</label>
+                      <input type="text" name="profileLastName" formControlName="lastName" class="input-Form">
+                    </p>
+                    <p>
+                      <label for="formGroupExampleInput" class="form-label">civility: &nbsp;</label>
+                      <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example"
+                        formControlName="civility">
+                        <option *ngFor="let civility of civilitys" [ngValue]="civility.id"> {{civility.name}} </option>
+                      </select>
+                      &nbsp;&nbsp;
+                      <label for="formGroupExampleInput" class="form-label">Gender: &nbsp;</label>
+                      <select class="form-select form-select-lg mb-2" aria-label=".form-select-lg example"
+                        formControlName="gender">
+                        <option *ngFor="let gender of genders" [ngValue]="gender.id"> {{gender.name}} </option>
+                      </select>
+                      &nbsp;&nbsp;
+                      <label for="formGroupExampleInput" class="form-label">BirthDay:&nbsp;</label>
+                      <input type="date" name="profileBirthDate" formControlName="birthdate" class="input-Form">
+                    </p>
                   </div>
+
                   <div formGroupName="password">
-                    <h4>2- Mot de passe</h4>
-                    <hr>
-                    <label for="formGroupExampleInput" class="form-label">Password :</label>
-                    <input type="password" formControlName="value" name="identitypassword" class="input-Form">
+                    <p>
+                      2- Mot de passe:&nbsp;
+                      <input type="password" formControlName="value" name="identitypassword" class="input-Form">
+                    </p>
                   </div>
-                  <hr>
 
                   <!-- Form group contactIdentifiers -->
 
                   <div formArrayName="getIdentifiersForm">
-                  
-
                     <div *ngFor="let identifierForm of getIdentifiersForm.controls; let i = index">
                       <div class="lesson-form-row" [formGroup]="identifierForm">
-
                         <h4>3-identifiers</h4>
-                        <hr>
-                      <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" formControlName="type">
-                            <option selected>Select identifierType</option>
+                        <p>
+                          <label selected>identifierType: &nbsp;</label>
+                          <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" formControlName="type">
                             <option *ngFor="let identifierType of identifierTypes" [ngValue]="identifierType.name"> {{identifierType.name}} </option>
                           </select>
-                          Value: 
-                          <input type="text" formControlName="value" class="input-Form"> <br>
-                          <!-- is Password:  -->
-                          <!-- <input type="checkbox" id="isPassword" name="isPassword" formControlName="isPassword"> -->
-
-                          Provider
+                          &nbsp;&nbsp;
+                          Value:&nbsp;
+                          <input type="text" formControlName="value" class="input-Form">
+                          &nbsp;&nbsp;
+                          Provider&nbsp;
                           <input type="text" formControlName="provider" class="input-Form">
-
-                        
-                      </div><hr>
-    
-                      <!-- Form group password -->
-                      
-                      <!-- Form group contactIdentifiers -->
-                      <!-- <div *ngFor="let identifier of createFullIdentity.get('identifiers'); let i=index"> -->
-                      <!-- <div formGroupName="contactIdentifiers"> -->
-    
-
+                        </p>
+                      </div>
                       </div>
                     </div>
                   </div>
@@ -148,30 +120,26 @@
                     <h4>4-Contact Identifiers</h4>
                      <div *ngFor="let contactForm of getConcatIdentifiers.controls; let i = index">
                       <div class="lesson-form-row" [formGroup]="contactForm">
-                      <select  class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" formControlName="type">
-                          <option selected>Select ContactidenfierType</option>
-                          <option *ngFor="let contactIdentifierType of contactIdentifierTypes" [ngValue]="contactIdentifierType.name"> {{contactIdentifierType.name}} </option>
-                        </select>
-                        <br>
-                        <br>
-                        Value:  
-                        <input type="text" formControlName="value" class="input-Form">
-
+                        <p>
+                          <label selected>ContactidenfierType: &nbsp;</label>
+                          <select  class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" formControlName="type">
+                            <option *ngFor="let contactIdentifierType of contactIdentifierTypes" [ngValue]="contactIdentifierType.name"> {{contactIdentifierType.name}} </option>
+                          </select>
+                          &nbsp;&nbsp;
+                          Value: 
+                          <input type="text" formControlName="value" class="input-Form">
+                        </p>
                       </div>
                     </div>
-                  </div>
-
-                <hr>
+                  </div><hr>
                 <div class="col-6 mx-auto">
                   <button class="btn btn-info">Create identity</button>
                 </div>
-                <hr>
-                <br>
               </form>
             </div>
 
             <!-- CRUD Contact Identifiers Email/Mobile -->
-            <div #contactIdentifiersElement class="col-sm-2 col-md-4 col-lg-3 bg-primary" cdkDrag
+            <div #contactIdentifiersElement class="col-sm-2 col-md-4 col-lg-3 mr-2 ml-2 bg-primary" cdkDrag
               (cdkDragMoved)="updatePosition()" cdkDragBoundary=".parentdiv-boundary">
               <form [formGroup]="contactIdentifiersForms" (ngSubmit)="contactIdentifiersFn(contactIdentifiersForms)"
                 novalidate>
@@ -180,36 +148,27 @@
                 <h4>Select action: </h4>
                 <p>
                   <input type="radio" name="action" (cheked)="setAction('update')" (change)="setAction('update')"
-                    class="input-Form"> Update contact Identifier
+                    class="input-radio"> Update contact Identifier <br>
                   <input type="radio" name="action" (cheked)="setAction('add')" (change)="setAction('add')"
-                    class="input-Form"> Add contact Identifier
+                    class="input-radio"> Add contact Identifier <br>
                   <input type="radio" name="action" (cheked)="setAction('delete')" (change)="setAction('delete')"
-                    class="input-Form"> Delete contact Identifier
+                    class="input-radio"> Delete contact Identifier <br>
                 </p>
                 <div>
-                  <!-- <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
-                    <option selected>Select Type</option>
-                    <option *ngFor="let contactIdentifierType of contactIdentifierTypes"
-                      [ngValue]="contactIdentifierType.name"> {{contactIdentifierType.name}} </option>
-                  </select> -->
-                  <div>
-                    <label for="formGroupExampleInput" class="form-label">Password :</label>
+                  <p>
                     <input type="checkbox" id="isPassword" name="isPassword" formControlName="isPassword"
-                      class="input-Form">
-                  </div>
-                  <div>
+                      class="input-radio">
+                    <label for="formGroupExampleInput" class="form-label">Password</label>
+                  </p>
+                  <p>
+                    <label>ContactidenfierType: &nbsp;</label>
                     <select  class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" formControlName="type">
-                      <option selected>Select ContactidenfierType</option>
                       <option *ngFor="let contactIdentifierType of contactIdentifierTypes" [ngValue]="contactIdentifierType.name"> {{contactIdentifierType.name}} </option>
                     </select>
-
-                    <p>Value:</p>
+                    Value: &nbsp;
                     <input type="email" formControlName="value" class="input-Form">
-                  </div>
+                  </p>
                 </div>
-                <!-- <div>
-                  <button type="submit" [disabled]="!contactIdentifiersForms.valid">Update status</button>
-                </div> -->
                 <div class="col-6 mx-auto">
                   <button type="submit" class="btn btn-info">Update status</button>
                 </div>
@@ -233,23 +192,6 @@
             </div>
             <div #getIdentifiers class="col-sm-2 col-md-4 col-lg-3 bg-primary" cdkDrag (cdkDragMoved)="updatePosition()"
               cdkDragBoundary=".parentdiv-boundary">
-              <!--<form [formGroup]="updateIdentityPwd" (ngSubmit)="updateIdentityPwd(updateIdentityPwd)" novalidate>
- 
-              <form [formGroup]="updateIdentityPwd" novalidate>
-                <h4 class="titleCreateIdentity">Update Identity password</h4>
-                <hr>
-                <div>
-                  <label for="formGroupExampleInput" class="form-label">Old password :</label>
-                  <input type="password" name="isPassword" class="input-Form">
-                </div>
-                <div>
-                  <label for="formGroupExampleInput" class="form-label">New password :</label>
-                  <input type="password" name="isPassword" class="input-Form">
-                </div>
-                <div class="col-6 mx-auto">
-                  <button type="submit" class="btn btn-info">Change password</button>
-                </div>
-              </form> -->
             </div>
           </div>
         </div>
