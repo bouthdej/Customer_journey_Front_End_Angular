@@ -18,6 +18,7 @@ import { HomeComponent } from './admin/home/home.component';
 
 import { MatNativeDateModule } from '@angular/material';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBarModule } from '@angular/material';
 
 
 @NgModule({
@@ -41,7 +42,7 @@ import { MatSelectModule } from '@angular/material/select';
     DragDropModule,
     MatNativeDateModule,
     MatSelectModule,
-
+    MatSnackBarModule,
     
   ],
 

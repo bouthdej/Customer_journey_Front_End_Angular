@@ -24,6 +24,7 @@
     "@popperjs/core": "^2.11.4",
     "boosted": "^5.1.3",
     "bootstrap": "^4.6.0",
+    "bourbon": "^7.2.0",
     "hammerjs": "^2.0.8",
     "leader-line": "^1.0.7",
     "moment": "^2.29.1",

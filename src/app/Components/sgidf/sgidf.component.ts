@@ -7,6 +7,7 @@ import 'leader-line';
 import { SgidfService } from 'src/app/Services/sgidf.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { NotificationService } from 'src/app/Services/notification.service';
 
 declare let LeaderLine: any;
 
@@ -111,14 +112,15 @@ export class SgidfComponent implements OnInit, OnDestroy {
   constructor(
     private renderer: Renderer2,
     private SGIDFSvc: SgidfService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private notification :NotificationService
   ) { }
 
 
   // Create user -Full identity- forms
   createFullIdentity = this.formBuilder.group({
-    status: ['activated'],
-    profile: this.formBuilder.group({
+     status: ['activated'],
+      profile: this.formBuilder.group({
       civility: [],
       displayName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(35)]],
       firstName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(35)]],
@@ -229,7 +231,7 @@ export class SgidfComponent implements OnInit, OnDestroy {
 
     this.createIdentityElementSbs = this.SGIDFSvc.creatIdentity(form.value).subscribe(
       createIdentityRes => {
-        console.log(createIdentityRes)
+        this.notification.success("Identité crée avec succés")
       },
       (errorRes: HttpErrorResponse) => {
         console.log(errorRes)
@@ -245,7 +247,6 @@ export class SgidfComponent implements OnInit, OnDestroy {
   }
 
   contactIdentifiersFn(form: FormGroup) {
-            console.log("====>",form.value)
 
     if (this.action !== "") {
       this.SGIDFSvc.updateContactIdentifiers({
@@ -253,10 +254,11 @@ export class SgidfComponent implements OnInit, OnDestroy {
         body: form.value
       }).subscribe(contactIdentifiersFnRes => {
         console.log(contactIdentifiersFnRes)
+        this.notification.success("ContactIdentifier  modifié avec succés!!!!")
+
       },
       error => {
-        console.log('===>',error);
-        
+        console.log(error);      
       }
       
       
@@ -270,6 +272,8 @@ export class SgidfComponent implements OnInit, OnDestroy {
   getIdentifierId(form: FormGroup) {
     this.SGIDFSvc.getIdentifier(form.value).subscribe(identifierRes => {
       console.log(identifierRes)
+      this.notification.success("get user ID")
+
     },
       (errorRes: HttpErrorResponse) => {
         console.log(errorRes)

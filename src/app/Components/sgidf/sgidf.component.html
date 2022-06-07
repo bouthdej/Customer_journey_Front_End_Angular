@@ -65,9 +65,9 @@
                   <div formGroupName="profile">
                     <h4>1- Profile</h4>
                     <hr>
-                    <label for="formGroupExampleInput" class="form-label">displayName :</label>
+                    <!-- <label for="formGroupExampleInput" class="form-label">displayName :</label>
                     <input type="text" name="profiledisplayName" formControlName="displayName" class="input-Form">
-                    <br>
+                    <br> -->
                     <label for="formGroupExampleInput" class="form-label">civility :</label>
                     <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example"
                       formControlName="civility">
@@ -78,12 +78,12 @@
                     <!-- <label for="formGroupExampleInput" class="form-label">avatar :</label>
                     <input type="text" name="profileavatar" formControlName="avatar" class="input-Form">
                     <br> -->
-                    <label for="formGroupExampleInput" class="form-label">timeZone :</label>
+                    <!-- <label for="formGroupExampleInput" class="form-label">timeZone :</label>
                     <input type="text" name="profiletimeZone" formControlName="timeZone" class="input-Form">
-                    <br>
-                    <label for="formGroupExampleInput" class="form-label">language :</label>
+                    <br> -->
+                    <!-- <label for="formGroupExampleInput" class="form-label">language :</label>
                     <input type="text" name="profilelanguage" formControlName="language" class="input-Form">
-                    <br>
+                    <br> -->
                     <label for="formGroupExampleInput" class="form-label">First name :</label>
                     <input type="text" name="profileFirstName" formControlName="firstName" class="input-Form">
                     <br>
@@ -186,7 +186,7 @@
                   <input type="radio" name="action" (cheked)="setAction('delete')" (change)="setAction('delete')"
                     class="input-Form"> Delete contact Identifier
                 </p>
-                <div *ngIf="action!='delete'">
+                <div>
                   <!-- <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
                     <option selected>Select Type</option>
                     <option *ngFor="let contactIdentifierType of contactIdentifierTypes"
@@ -198,8 +198,10 @@
                       class="input-Form">
                   </div>
                   <div>
-                    <p>Type:</p>
-                    <input type="email" formControlName="type" class="input-Form">
+                    <select  class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" formControlName="type">
+                      <option selected>Select ContactidenfierType</option>
+                      <option *ngFor="let contactIdentifierType of contactIdentifierTypes" [ngValue]="contactIdentifierType.name"> {{contactIdentifierType.name}} </option>
+                    </select>
 
                     <p>Value:</p>
                     <input type="email" formControlName="value" class="input-Form">

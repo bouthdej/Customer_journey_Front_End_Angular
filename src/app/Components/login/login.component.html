@@ -1,75 +1,41 @@
-<div class="row">
-  <h2 class="titleAuth">Authentification </h2>
-  <div class="col-sm-6 col-lg-offset-3">
-    <form [formGroup]="user" (ngSubmit)="login(user)">
-      <div class="form-group">
-        <div class="col-sm-13">
-          <label for="exampleFormControlInput1" class="form-label">Email address</label>
-          <input formControlName="email" type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com"><br>
-        </div>
-
-
-        <div class="col-sm-13">
-          <label for="exampleFormControlInput1" class="form-label">Password</label>
-          <input formControlName="password" id="isPassword" name="isPassword" type="password" class="form-control" id="inputPassword">
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="radio" value="AdminAccess" formControlName="accessType">
-          <label class="form-check-label" for="Admin access">
-            Admin access
-          </label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="radio" value="UserAccess" formControlName="accessType">
-          <label class="form-check-label" for="User access">
-            User access
-          </label>
-        </div>
-        <div class="col-12">
-          <button type="submit" class="btn btn-primary mb-3">Connecter</button>
-        </div>
-
-
-
-
-
-
-      </div>
-
-
-
-    </form>
+<form >
+  <div class="imgcontainer">
+    <img src="../../../assets/user.png" alt="Authentification" class="lock" width="150px" height="150px">
+    <br>
+    <br>
+   <h3> Authentification </h3>
   </div>
-</div>
-<!-- <div>
-<form [formGroup]="user" (ngSubmit)="login(user)">
-  <div class="mb-3">
-  <div class="col-sm-5">
+
+  <div class="container">
     <label for="exampleFormControlInput1" class="form-label">Email address</label>
-    <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com">
-  </div>
-<div class="mb-3 row">
-  <label for="exampleFormControlInput1" class="form-label">Password</label>
-  <div class="col-sm-5">
-    <input type="password" class="form-control" id="inputPassword">
-  </div>
-</div>
-</div>
-<div class="form-check">
-  <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-  <label class="form-check-label" for="flexRadioDefault1">
-    Admin access
-  </label>
-</div>
-<div class="form-check">
-  <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
-  <label class="form-check-label" for="flexRadioDefault2">
-    User access
-  </label>
-</div>
-<div class="col-12">
-  <button type="submit" class="btn btn-primary mb-3">Connecter</button>
-</div>
-</form>
+    <input formControlName="email" type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com"><br>
 
-</div><!--  -->
+
+    <label for="exampleFormControlInput1" class="form-label">Password</label>
+    <input formControlName="password" id="isPassword" name="isPassword" type="password" class="form-control" id="inputPassword">
+    <div class="form-check">
+      <input class="form-check-input" type="radio" value="AdminAccess" formControlName="accessType">
+      <label class="form-check-label" for="Admin access">
+        Admin access
+      </label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" value="UserAccess" formControlName="accessType">
+      <label class="form-check-label" for="User access">
+        User access
+      </label>
+    </div>
+
+
+
+    <button type="submit" class="btn btn-primary mb-3">Login</button>
+    <label>
+      <input type="checkbox" checked="checked" name="remember"> Remember me
+    </label>
+  </div>
+
+  <div class="container" style="background-color:#f1f1f1">
+    <button type="button" class="cancelbtn">Cancel</button>
+    <span class="psw">Forgot <a href="#">password?</a></span>
+  </div>
+</form>

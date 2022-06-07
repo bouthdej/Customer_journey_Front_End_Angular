@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -9,7 +10,7 @@ import { Component } from '@angular/core';
 
 export class AppComponent {
   isAdmin=false;
- constructor()  { }
+ constructor(private router: Router)  { }
 
 ngOnInit() {
   if (!!localStorage.getItem('adminToken')) {
@@ -17,6 +18,12 @@ ngOnInit() {
   } else {
     this.isAdmin=false
   }
+}
+
+logout()
+{  
+  localStorage.removeItem('token');
+  this.router.navigate['/login']
 }
 
 }
