@@ -14,37 +14,70 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <button class="btn btn-primary" (click)="addNewElem()" style="margin-left: 2%; margin-right: 2%;">Add new
-        Forms</button>
-      <mat-form-field *ngIf="show==true">
-        <mat-label>Attach:</mat-label>
-        <mat-select [(ngModel)]="attachVal" (ngModelChange)="updateAttachVal($event)" ngModel name="sgidfForm">
-          <mat-option *ngFor="let attachForm of attachForms" [value]="attachForm.value">
-            {{attachForm.name}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field *ngIf="show==true">
-        <mat-label>Attached:</mat-label>
-        <mat-select [(ngModel)]="attachedVal" (ngModelChange)="updateAttachedVal($event)" ngModel name="sgidfForm">
-          <mat-option *ngFor="let attachedForm of attachedForms" [value]="attachedForm.value">
-            {{attachedForm.name}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-      <button type="button" *ngIf="show==true" class="btn btn-primary" (click)="attach()"
-        style="margin-left: 2%;">Attach</button>
+      <button class="btn btn-primary" (click)="addNewElem()" style="margin-left: 2%; margin-right: 2%;">Add new Forms</button>
+
+      <!-- Button trigger modal -->
+      <button *ngIf="show==true" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#attach">
+        attach
+      </button>
+
+      <!-- Modal -->
+      <div class="modal fade" id="attach" tabindex="-1" aria-labelledby="attachLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content text-body">
+            <div class="modal-header text-body">
+              <h5 class="modal-title">Attach forms</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" style="color:white;"><span class="visually-hidden">Close</span></button>
+            </div>
+            <div class="modal-body text-body">
+              <label>Attach from:</label> <br>
+              <input class="form-check-input" type="radio" name="attachVal" id="attachVal">
+              <label class="form-check-label" for="attachVal">
+                None
+              </label>
+              <div class="form-check text-body" *ngFor="let attachForm of attachForms">
+                <input #radioEvent class="form-check-input text-body" type="radio" name="attachVal" id="attachVal" (click)="updateAttachedVal(attachForm.value)">
+                <label class="form-check-label text-body" for="attachVal">
+                  {{attachForm.name}}
+                </label>
+              </div>
+              &nbsp;
+              <div *ngIf="showAttached==true">
+                <label class="text-body">Attach to:</label>
+                <div class="form-check text-body" *ngFor="let allowedForm of allowedForms">
+                  <input #radioEvent class="form-check-input text-body" type="radio" (click)="setAttachedVal(allowedForm.value)" name="attachedVal" id="attachedVal">
+                  <label class="form-check-label text-body" for="attachedVal">
+                    {{allowedForm.name}}
+                  </label>
+                </div>
+                <select class="form-select form-select-lg mb-3 text-body" aria-label=".form-select-lg example" [(ngModel)]="transmittedInfo" (ngModelChange)="updateTransmittedInfo(transmittedInfo)" name="transmittedInfo" ngDefaultControl>
+                <option class="text-body" *ngFor="let transmittedInfo of transmittedInfos" [ngValue]="transmittedInfo" > {{transmittedInfo}} </option>
+                </select>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" *ngIf="show==true" class="btn btn-primary" (click)="attach()" data-bs-dismiss="modal"
+              style="margin-left: 2%;">Attach</button>
+              <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <mat-form-field *ngIf="detachState==true" style="margin-left: 2%;">
         <mat-label>Detach:</mat-label>
-        <mat-select [(ngModel)]="dettachedVal" (ngModelChange)="updateDettachedVal($event)" ngModel name="sgidfForm">
+        <mat-select  [(ngModel)]="dettachedVal" (ngModelChange)="updateDettachedVal($event)" ngModel name="sgidfForm">
           <mat-option *ngFor="let dettachTrack of dettachTracks" [value]="dettachTrack">
             {{dettachTrack}}
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <button type="button" *ngIf="detachState==true" class="btn btn-primary" (click)="detach()"
-        style="margin-left: 2%;">Detach</button>
+      <button type="button" class="btn btn-primary" (click)="detach()"style="margin-left: 2%;">
+        Detach
+      </button>
+      <button type="button" class="btn btn-primary" (click)="run()"style="margin-left: 2%;">
+        Run
+      </button>
     </div>
 
     <div #parent id="parentdiv" class="" style="border:solid; display: block; position:relative">
@@ -52,9 +85,50 @@
         <div class="row">
           <!-- this div will later include all the inserted forms -->
           <div>
+
+            <!-- Form group contactIdentifiers -->
+            <div #IdentifiersElem id="IdentifiersElem" class="Identifiers col-sm-2 col-md-4 col-lg-3 bg-primary mt-2 mb-2" cdkDrag
+            (cdkDragMoved)="updatePosition()" cdkDragBoundary=".parentdiv-boundary" style="display: none;">         
+              <form [formGroup]="IdentifiersForms" (ngSubmit)="insertIdentityElement()" novalidate>
+                <div class="lesson-form-row">
+                  <h4>identifier:</h4>
+                  <p>
+                    <label selected>identifier type: &nbsp;</label>
+                    <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" formControlName="type">
+                      <option *ngFor="let identifierType of identifierTypes" [ngValue]="identifierType.name"> {{identifierType.name}} </option>
+                    </select>
+                    <br>
+                    Value:&nbsp;
+                    <input type="text" formControlName="value" class="input-Form">
+                    <br>
+                    Provider&nbsp;
+                    <input type="text" formControlName="provider" class="input-Form">
+                  </p>
+                </div>
+                <button class="btn btn-info">insert identifier</button>
+              </form>
+            </div>
+            <div  #contactIdentifiersElem id="contactIdentifiersElem" class="Identifiers col-sm-2 col-md-4 col-lg-3 bg-primary mt-2 mb-2" cdkDrag
+            (cdkDragMoved)="updatePosition()" cdkDragBoundary=".parentdiv-boundary" style="display: none;">
+            <form [formGroup]="contactIdentifiersForms" (ngSubmit)="insertContactIdentityElement()" novalidate>
+              <h4>Contact Identifiers</h4>
+              <div class="lesson-form-row">
+                <p>
+                  <label selected>Type: &nbsp;</label>
+                  <select  class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" formControlName="type">
+                    <option *ngFor="let contactIdentifierType of contactIdentifierTypes" [ngValue]="contactIdentifierType.name"> {{contactIdentifierType.name}} </option>
+                  </select><br>
+                  Value: 
+                  <input type="text" formControlName="value" class="input-Form">
+                </p>
+              </div>
+              <button class="btn btn-info">insert contact identifier</button>
+            </form>
+            </div>
+            
             <!-- Create Identity -->
-            <div #createIdentityElement class="createIdentityElement col-sm-2 col-md-4 col-lg-3 bg-primary mt-2" cdkDrag
-              (cdkDragMoved)="updatePosition()" cdkDragBoundary=".parentdiv-boundary">
+            <div #createIdentityElement id="createIdentityElement" class="createIdentityElement col-sm-2 col-md-4 col-lg-3 bg-primary mt-2" cdkDrag
+              (cdkDragMoved)="updatePosition()" cdkDragBoundary=".parentdiv-boundary" style="display: none;">
               <form [formGroup]="createFullIdentity" (ngSubmit)="createNewUser(createFullIdentity)" novalidate>
                 <h4 class="titleCreateIdentity"> Create identity</h4><hr>
                 <!-- Create Identity Profile-->
@@ -72,13 +146,12 @@
                       <label for="formGroupExampleInput" class="form-label">civility: &nbsp;</label>
                       <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example"
                         formControlName="civility">
-                        <option *ngFor="let civility of civilitys" [ngValue]="civility.id"> {{civility.name}} </option>
+                        <option *ngFor="let civility of civilities" [ngValue]="civility.id"> {{civility.name}} </option>
                       </select>
                       &nbsp;&nbsp;
-                      <label for="formGroupExampleInput" class="form-label">Gender: &nbsp;</label>
                       <select class="form-select form-select-lg mb-2" aria-label=".form-select-lg example"
-                        formControlName="gender">
-                        <option *ngFor="let gender of genders" [ngValue]="gender.id"> {{gender.name}} </option>
+                        formControlName="gender" style="display: none;">
+                        <option *ngFor="let civility of civilities" [ngValue]="civility.id"> {{civility.name}} </option>
                       </select>
                       &nbsp;&nbsp;
                       <label for="formGroupExampleInput" class="form-label">BirthDay:&nbsp;</label>
@@ -88,17 +161,16 @@
 
                   <div formGroupName="password">
                     <p>
-                      2- Mot de passe:&nbsp;
+                      Mot de passe:&nbsp;
                       <input type="password" formControlName="value" name="identitypassword" class="input-Form">
                     </p>
                   </div>
 
                   <!-- Form group contactIdentifiers -->
-
-                  <div formArrayName="getIdentifiersForm">
+                  <div formArrayName="identifiers">
+                    <h4>identifiers:&nbsp;</h4>
                     <div *ngFor="let identifierForm of getIdentifiersForm.controls; let i = index">
                       <div class="lesson-form-row" [formGroup]="identifierForm">
-                        <h4>3-identifiers</h4>
                         <p>
                           <label selected>identifierType: &nbsp;</label>
                           <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" formControlName="type">
@@ -116,8 +188,8 @@
                     </div>
                   </div>
 
-                  <div formArrayName="getConcatIdentifiers">
-                    <h4>4-Contact Identifiers</h4>
+                  <div formArrayName="contactIdentifiers">
+                    <h4>Contact Identifiers:&nbsp;</h4>
                      <div *ngFor="let contactForm of getConcatIdentifiers.controls; let i = index">
                       <div class="lesson-form-row" [formGroup]="contactForm">
                         <p>
@@ -131,17 +203,14 @@
                         </p>
                       </div>
                     </div>
-                  </div><hr>
-                <div class="col-6 mx-auto">
-                  <button class="btn btn-info">Create identity</button>
-                </div>
+                  </div>
               </form>
             </div>
 
             <!-- CRUD Contact Identifiers Email/Mobile -->
-            <div #contactIdentifiersElement class="col-sm-2 col-md-4 col-lg-3 mr-2 ml-2 bg-primary" cdkDrag
-              (cdkDragMoved)="updatePosition()" cdkDragBoundary=".parentdiv-boundary">
-              <form [formGroup]="contactIdentifiersForms" (ngSubmit)="contactIdentifiersFn(contactIdentifiersForms)"
+            <div #contactIdentifiersElement id="contactIdentifiersElement" class="col-sm-2 col-md-4 col-lg-3 mr-2 ml-2 bg-primary" cdkDrag
+              (cdkDragMoved)="updatePosition()" cdkDragBoundary=".parentdiv-boundary" style="display: none;">
+              <form [formGroup]="modifiedContactIdentifier" (ngSubmit)="contactIdentifiersFn(modifiedContactIdentifier)"
                 novalidate>
                 <h4 class="titleCreateIdentity">Get Contact Identifier</h4>
                 <hr>
@@ -176,8 +245,8 @@
             </div>
 
             <!-- CRUD get Identifier ID -->
-            <div #getIdentifiers class="col-sm-2 col-md-4 col-lg-3 bg-primary" cdkDrag (cdkDragMoved)="updatePosition()"
-              cdkDragBoundary=".parentdiv-boundary">
+            <div #getIdentifiersElement id="getIdentifiersElement" class="col-sm-2 col-md-4 col-lg-3 bg-primary" cdkDrag (cdkDragMoved)="updatePosition()"
+              cdkDragBoundary=".parentdiv-boundary" style="display: none;">
               <form [formGroup]="getIdentifier" (ngSubmit)="getIdentifierId(getIdentifier)" novalidate>
                 <h4 class="titleCreateIdentity">Get Identity</h4>
                 <hr>
@@ -190,6 +259,7 @@
                 </div>
               </form>
             </div>
+
           </div>
         </div>
       </div>

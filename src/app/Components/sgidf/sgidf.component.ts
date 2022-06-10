@@ -23,7 +23,6 @@ interface idaasForm {
 })
 export class SgidfComponent implements OnInit, OnDestroy {
 
-  //declare subscriptions
   createIdentityElementSbs = new Subscription
 
   error: boolean = false
@@ -32,17 +31,17 @@ export class SgidfComponent implements OnInit, OnDestroy {
   line = []
   attachedNumber: number = 1
   sgidfForms: idaasForm[] = [
-    { name: "get Identifier", value: "getIdentifierElement" },
-    { name: "create Identifier", value: "createIdenifierElement" },
-    { name: "get Identity", value: "getIdentityElement" },
-    { name: "get contact identifier", value: "getContactIdentifierElement" },
-    { name: "update identity password", value: "updateIdentityPwdElement" }
+    { name: "create new Identity", value: "createIdentityElement" },
+    { name: "contact identifier", value: "contactIdentifiersElement" },
+    { name: "get Identitier ID", value: "getIdentifiers" },
   ]
   elements = []
   selectedValue: string = ""
   show: boolean = false
   attachForms = []
-  attachedForms = []
+  allowedForms=[]
+  transmittedInfos=[]
+  transmittedInfo=""
   attachVal: string = ""
   attachedVal: string = ""
   attachTrack = []
@@ -51,26 +50,19 @@ export class SgidfComponent implements OnInit, OnDestroy {
   dettachedVal: string = ""
   dettachTracks = []
   identityBDay: any
+  result=[]
 
   //Create identity variables:
-  civilitys = [{
+  civilities = [{
     name:"M.",
+    val: "male",
     id: "1"
   },
   {
     name:"Mme",
+    val: "male",
     id: "2"
   }
-  ]
-  genders = [
-    {
-      name: "male",
-      id: "1"
-    },
-    {
-      name: "female",
-      id: "2"
-    }
   ]
 
   identifierTypes = [
@@ -93,18 +85,19 @@ export class SgidfComponent implements OnInit, OnDestroy {
 
   action: string = ""
 
-
-  contactIdentifiers: any[] = [];
-  myContactIdentifier: [{}];
-
+  showAttached:boolean=false
+  createIdentityElementObj={
+    name:"create identity",
+    value:"createIdentityElement",
+    links: "email"
+  }
 
   @ViewChild("parent", { static: false }) parentDiv: ElementRef
   @ViewChild('createIdentityElement', { read: ElementRef, static: false }) createIdentityElement: ElementRef;
+  @ViewChild('IdentifiersElem', { read: ElementRef, static: false }) IdentifiersElem: ElementRef;
+  @ViewChild('contactIdentifiersElem', { read: ElementRef, static: false }) contactIdentifiersElem: ElementRef;
   @ViewChild('contactIdentifiersElement', { read: ElementRef, static: false }) contactIdentifiersElement: ElementRef;
-  @ViewChild('createIdenifierElement', { read: ElementRef, static: false }) createIdenifierElement: ElementRef;
-  @ViewChild('getIdentityElement', { read: ElementRef, static: false }) getIdentityElement: ElementRef;
-  @ViewChild('getContactIdentifierElement', { read: ElementRef, static: false }) getContactIdentifierElement: ElementRef;
-  @ViewChild('updateIdentityPwdElement', { read: ElementRef, static: false }) updateIdentityPwdElement: ElementRef;
+  @ViewChild('getIdentifiersElement', { read: ElementRef, static: false }) getIdentifiersElement: ElementRef;
 
   constructor(
     private renderer: Renderer2,
@@ -128,39 +121,24 @@ export class SgidfComponent implements OnInit, OnDestroy {
       timeZone: ['Europe/Paris'],
       language: ['fr']
     }),
- /*    identifiers: this.formBuilder.array([{
-      // this.formBuilder.group({
-      provider: '',
-      type: '',
-      value: ''
-      // })
-    }
-      // "provider": "sandbox",
-      // "type": "LOGIN",
-      // "value": "bouthayna.djebali@sofrecom.com"
-    ]), */
     password: this.formBuilder.group({
       value: ['', [Validators.required, Validators.minLength(3)]]
     }),
-
     contactIdentifiers: this.formBuilder.array([]),
     identifiers : this.formBuilder.array([])
+  })
 
-    /*  contactIdentifiers: this.formBuilder.array([{
-       value:'',
-       isPassword:'',
-       type:''
-     } */
+  contactIdentifiers= this.formBuilder.group({
+    type: ['', [Validators.required, Validators.minLength(3)]],
+    valye: ['', [Validators.required, Validators.minLength(3)]],
+    provider: ['', [Validators.required, Validators.minLength(3)]]
 
-    /*     ]),
-     */    // contactIdentifiers: this.formBuilder.group({
-    //   value:[''],
-    //   isPassword:[false],
-    //   type:['',[]],
-    // }),
+  })
 
-
-
+  identifiers= this.formBuilder.group({
+    value: ['', [Validators.required, Validators.minLength(3)]],
+    isPassword: ['', [Validators.required, Validators.minLength(3)]],
+    type: ['', [Validators.required, Validators.minLength(3)]]
   })
 
   get getConcatIdentifiers() {
@@ -172,45 +150,38 @@ export class SgidfComponent implements OnInit, OnDestroy {
     return this.createFullIdentity.controls["identifiers"] as FormArray;
   }
 
-  /*    contactIdentifiers:  this.formBuilder.array([{
-         value:'omarthi@sofrecom.com',
-         isPassword:false,
-         type:'email',
-       }])
-   })
- 
-  */
   // Create user -Full identity- forms
   contactIdentifiersForms = this.formBuilder.group({
-    value: ['', [Validators.required, Validators.email || Validators.minLength(8)]],
+    value: ['email@orange.com', [Validators.required, Validators.email || Validators.minLength(8)]],
     isPassword: [false],
-    type: ['', [Validators.minLength(5), Validators.maxLength(6), Validators.required]],
+    type: ['email', [Validators.minLength(5), Validators.maxLength(6), Validators.required]],
+  })
+
+  // Create user -Full identity- forms
+  modifiedContactIdentifier = this.formBuilder.group({
+    value: ['email@orange.com', [Validators.required, Validators.email || Validators.minLength(8)]],
+    isPassword: [false],
+    type: ['email', [Validators.minLength(5), Validators.maxLength(6), Validators.required]],
   })
 
   IdentifiersForms = this.formBuilder.group({
-    type:  ['', [Validators.required, Validators.email || Validators.minLength(8)]],
-    value:  ['', [Validators.required, Validators.email || Validators.minLength(8)]],
-    provider: ['', [Validators.required, Validators.email || Validators.minLength(8)]],
+    type:  ['LOGIN', [Validators.required, Validators.email || Validators.minLength(8)]],
+    value:  ['email@orange.com', [Validators.required, Validators.email || Validators.minLength(8)]],
+    provider: ['sandbox', [Validators.required, Validators.email || Validators.minLength(8)]],
   })
-
-
-  
 
   // Create user -Full identity- forms
   getIdentifier = this.formBuilder.group({
     email: ['', [Validators.required, Validators.email]],
   })
+
   updateIdentityPwd = this.formBuilder.group({
     password: this.formBuilder.group({
       value: ['', [Validators.required, Validators.minLength(8)]]
     }),
-
-
   })
-  ngOnInit() {
-    this.getConcatIdentifiers.push(this.contactIdentifiersForms);   
-    this.getIdentifiersForm.push(this.IdentifiersForms)
 
+  ngOnInit() {
   }
 
   addNewCompany() {
@@ -224,11 +195,20 @@ export class SgidfComponent implements OnInit, OnDestroy {
     )
   }
 
-  createNewUser(form: FormGroup) {
+  insertIdentityElement(){
+    this.getIdentifiersForm.push(this.IdentifiersForms)
+  }
 
+  insertContactIdentityElement(){
+    this.getConcatIdentifiers.push(this.contactIdentifiersForms);
+  }
+
+  createNewUser(form: FormGroup) {
     this.createIdentityElementSbs = this.SGIDFSvc.creatIdentity(form.value).subscribe(
       createIdentityRes => {
         this.notification.success("Identité crée avec succés")
+        console.log(createIdentityRes)
+        this.result.push(createIdentityRes["body"])
       },
       (errorRes: HttpErrorResponse) => {
         console.log(errorRes)
@@ -244,7 +224,6 @@ export class SgidfComponent implements OnInit, OnDestroy {
   }
 
   contactIdentifiersFn(form: FormGroup) {
-
     if (this.action !== "") {
       this.SGIDFSvc.updateContactIdentifiers({
         methode: this.action,
@@ -283,6 +262,7 @@ export class SgidfComponent implements OnInit, OnDestroy {
         }
       })
   }
+
   updatepwdIdentityFn(form: FormGroup) {
     this.SGIDFSvc.updateidentitypwd(form.value).subscribe
   }
@@ -292,11 +272,46 @@ export class SgidfComponent implements OnInit, OnDestroy {
   }
 
   addNewElem() {
-  
+    switch (this.selectedValue) {
+      case "createIdentityElement":
+        this.renderer.setStyle(this.IdentifiersElem.nativeElement,"display", "block")
+        this.renderer.setStyle(this.IdentifiersElem.nativeElement,"position", "relative")
+        this.renderer.setStyle(this.contactIdentifiersElem.nativeElement,"display", "block")
+        this.renderer.setStyle(this.contactIdentifiersElem.nativeElement,"position", "relative")
+        this.renderer.setStyle(this.createIdentityElement.nativeElement,"display", "block")
+        this.renderer.setStyle(this.createIdentityElement.nativeElement,"position", "relative")
+        this.elements.push(`${this.createIdentityElement}`)
+        this.attachForms.push({
+          name:"create identity",
+          value:"createIdentityElement"
+        })
+        this.show=true
+        break;
+      case "contactIdentifiersElement":
+        this.renderer.setStyle(this.contactIdentifiersElement.nativeElement,"display", "block")
+        this.renderer.setStyle(this.contactIdentifiersElement.nativeElement,"position", "relative")
+        this.elements.push(`${this.contactIdentifiersElement}`)
+        this.attachForms.push({
+          name:"update identifier",
+          value:"contactIdentifiersElement"
+        })
+        this.show=true
+        break;
+      case "getIdentifiers":
+        this.renderer.setStyle(this.getIdentifiersElement.nativeElement,"display", "block")
+        this.renderer.setStyle(this.getIdentifiersElement.nativeElement,"position", "relative")
+        this.elements.push(`${this.getIdentifiersElement}`)
+        this.attachForms.push({
+          name:"get identity ID",
+          value:"getIdentifiers"
+        })
+        this.show=true
+        break;
+      }
   }
 
-  updateAttachVal(val) {
-    this.attachVal = val
+  setAttachedVal(val) {
+    this.attachedVal = val
   }
 
   updateDettachedVal(val) {
@@ -304,12 +319,55 @@ export class SgidfComponent implements OnInit, OnDestroy {
   }
 
   updateAttachedVal(val) {
-    this.attachedVal = val
+    this.attachVal = val
+    this.allowedForms=[]
+    this.transmittedInfos=[]
+    if(val=="none"){
+      this.showAttached=false
+
+      this.error=true
+      this.errorMsg="Please choose form before click on attach button"
+    }else{
+      this.showAttached=true
+      switch (val) {
+        case "createIdentityElement":
+          this.allowedForms.push(
+            {
+              name:"update identifier",
+              value:"contactIdentifiersElement"
+            },
+            {
+              name:"get identity ID",
+              value:"getIdentifiers"
+            }
+          )
+          this.transmittedInfos.push("email", "mobile")
+          break;
+        case "contactIdentifiersElement":
+          this.allowedForms.push(
+            {
+              name:"get identity ID",
+              value:"getIdentifiers"
+            })
+            this.transmittedInfos.push("email")
+            break;
+        // case "getIdentifiers":
+        //   this.attachForms.push({
+        //     name:"get identity ID",
+        //     value:"getIdentifiers"
+        //   })
+        //   this.show=true
+        //   break;
+      }
+    }
+  }
+
+  updateTransmittedInfo(val){
+    this.transmittedInfo=val
   }
 
   nameChanged(event) {
-    console.log(event)
-
+    this.selectedValue=event
   }
 
   updatePosition() {
@@ -320,163 +378,96 @@ export class SgidfComponent implements OnInit, OnDestroy {
   }
 
   attach() {
-    // if(this.attachVal==null || this.attachVal==undefined || this.attachedVal==null || this.attachedVal==undefined){
-    //   this.error=true
-    //   this.errorMsg="Please choose form before click on attach button"
-    // }else if(this.attachVal==this.attachedVal){
-    //   this.error=true
-    //   this.errorMsg="Forms must be different to be attached"
-    // }else{
-    //   this.error=false
-    //   switch (`${this.attachVal}${this.attachedVal}`) {
-    //     case "getIdentifierElementcreateIdenifierElement":
-    //       this.line[this.attachedNumber]=new LeaderLine(this.getIdentifierElement.nativeElement, this.createIdenifierElement.nativeElement, {color: 'black', size: 4, endLabel: `link${this.attachedNumber}`});
-    //       this.attachTrack.push({
-    //         index:this.attachedNumber,
-    //         attach:this.getIdentifierElement,
-    //         attached:this.createIdenifierElement,
-    //         link:`link ${this.attachedNumber}`
-    //       })
-    //       this.dettachTracks.push(`link ${this.attachedNumber}`)
-    //       this.detachState=true
-    //       this.attachedNumber++
-    //     break;
-    //     case "getIdentifierElementgetIdentityElement":
-    //       this.line[this.attachedNumber]=new LeaderLine(this.getIdentifierElement.nativeElement, this.getIdentityElement.nativeElement, {color: 'black', size: 4, endLabel: `link${this.attachedNumber}`});
-    //       this.attachTrack.push({
-    //         index:this.attachedNumber,
-    //         attach:this.getIdentifierElement,
-    //         attached:this.getIdentityElement,
-    //         link:`link ${this.attachedNumber}`
-    //       })
-    //       this.dettachTracks.push(`link ${this.attachedNumber}`)
-    //       this.detachState=true
-    //       this.attachedNumber++
-    //     break;
-    //     case "getIdentifierElementgetContactIdentifierElement":
-    //       this.line[this.attachedNumber]=new LeaderLine(this.getIdentifierElement.nativeElement, this.getContactIdentifierElement.nativeElement, {color: 'black', size: 4, endLabel: `link${this.attachedNumber}`});
-    //       this.attachTrack.push({
-    //         index:this.attachedNumber,
-    //         attach:this.getIdentifierElement,
-    //         attached:this.getContactIdentifierElement,
-    //         link:`link ${this.attachedNumber}`
-    //       })
-    //       this.dettachTracks.push(`link ${this.attachedNumber}`)
-    //       this.detachState=true
-    //       this.attachedNumber++
-    //     break;
-    //     case "getIdentifierElementupdateIdentityPwdElement":
-    //       this.line[this.attachedNumber]=new LeaderLine(this.getIdentifierElement.nativeElement, this.updateIdentityPwdElement.nativeElement, {color: 'black', size: 4, endLabel: `link${this.attachedNumber}`});
-    //       this.attachTrack.push({
-    //         index:this.attachedNumber,
-    //         attach:this.getIdentifierElement,
-    //         attached:this.updateIdentityPwdElement,
-    //         link:`link ${this.attachedNumber}`
-    //       })
-    //       this.dettachTracks.push(`link ${this.attachedNumber}`)
-    //       this.detachState=true
-    //       this.attachedNumber++
-    //     break;
-
-    //     case "createIdenifierElementgetIdentityElement":
-    //       this.line[this.attachedNumber]=new LeaderLine(this.createIdenifierElement.nativeElement, this.getIdentityElement.nativeElement, {color: 'black', size: 4, endLabel: `link${this.attachedNumber}`});
-    //       this.attachTrack.push({
-    //         index:this.attachedNumber,
-    //         attach:this.createIdenifierElement,
-    //         attached:this.getIdentityElement,
-    //         link:`link ${this.attachedNumber}`
-    //       })
-    //       this.dettachTracks.push(`link ${this.attachedNumber}`)
-    //       this.detachState=true
-    //       this.attachedNumber++
-    //     break;
-    //     case "createIdenifierElementgetContactIdentifierElement":
-    //       this.line[this.attachedNumber]=new LeaderLine(this.createIdenifierElement.nativeElement, this.getContactIdentifierElement.nativeElement, {color: 'black', size: 4, endLabel: `link${this.attachedNumber}`});
-    //       this.attachTrack.push({
-    //         index:this.attachedNumber,
-    //         attach:this.createIdenifierElement,
-    //         attached:this.getContactIdentifierElement,
-    //         link:`link ${this.attachedNumber}`
-    //       })
-    //       this.dettachTracks.push(`link ${this.attachedNumber}`)
-    //       this.detachState=true
-    //       this.attachedNumber++
-    //     break;
-    //     case "createIdenifierElementupdateIdentityPwdElement":
-    //       this.line[this.attachedNumber]=new LeaderLine(this.createIdenifierElement.nativeElement, this.updateIdentityPwdElement.nativeElement, {color: 'black', size: 4, endLabel: `link${this.attachedNumber}`});
-    //       this.attachTrack.push({
-    //         index:this.attachedNumber,
-    //         attach:this.createIdenifierElement,
-    //         attached:this.updateIdentityPwdElement,
-    //         link:`link ${this.attachedNumber}`
-    //       })
-    //       this.dettachTracks.push(`link ${this.attachedNumber}`)
-    //       this.detachState=true
-    //       this.attachedNumber++
-    //     break;
-
-    //     case "getIdentityElementgetContactIdentifierElement":
-    //       this.line[this.attachedNumber]=new LeaderLine(this.getIdentityElement.nativeElement, this.getContactIdentifierElement.nativeElement, {color: 'black', size: 4, endLabel: `link${this.attachedNumber}`});
-    //       this.attachTrack.push({
-    //         index:this.attachedNumber,
-    //         attach:this.getIdentityElement,
-    //         attached:this.getContactIdentifierElement,
-    //         link:`link ${this.attachedNumber}`
-    //       })
-    //       this.dettachTracks.push(`link ${this.attachedNumber}`)
-    //       this.detachState=true
-    //       this.attachedNumber++
-    //     break;
-    //     case "getIdentityElementupdateIdentityPwdElement":
-    //       this.line[this.attachedNumber]=new LeaderLine(this.getIdentityElement.nativeElement, this.updateIdentityPwdElement.nativeElement, {color: 'black', size: 4, endLabel: `link${this.attachedNumber}`});
-    //       this.attachTrack.push({
-    //         index:this.attachedNumber,
-    //         attach:this.getIdentityElement,
-    //         attached:this.updateIdentityPwdElement,
-    //         link:`link ${this.attachedNumber}`
-    //       })
-    //       this.dettachTracks.push(`link ${this.attachedNumber}`)
-    //       this.detachState=true
-    //       this.attachedNumber++
-    //     break;
-    //     case "getIdentityElementupdateIdentityPwdElement":
-    //       this.line[this.attachedNumber]=new LeaderLine(this.getIdentityElement.nativeElement, this.updateIdentityPwdElement.nativeElement, {color: 'black', size: 4, endLabel: `link${this.attachedNumber}`});
-    //       this.attachTrack.push({
-    //         index:this.attachedNumber,
-    //         attach:this.getIdentityElement,
-    //         attached:this.updateIdentityPwdElement,
-    //         link:`link ${this.attachedNumber}`
-    //       })
-    //       this.dettachTracks.push(`link ${this.attachedNumber}`)
-    //       this.detachState=true
-    //       this.attachedNumber++
-    //     break;
-    //     case "getContactIdentifierElementupdateIdentityPwdElement":
-    //       this.line[this.attachedNumber]=new LeaderLine(this.getContactIdentifierElement.nativeElement, this.updateIdentityPwdElement.nativeElement, {color: 'black', size: 4, endLabel: `link${this.attachedNumber}`});
-    //       this.attachTrack.push({
-    //         index:this.attachedNumber,
-    //         attach:this.getContactIdentifierElement,
-    //         attached:this.updateIdentityPwdElement,
-    //         link:`link ${this.attachedNumber}`
-    //       })
-    //       this.dettachTracks.push(`link ${this.attachedNumber}`)
-    //       this.detachState=true
-    //       this.attachedNumber++
-    //     break;
-    //   }
-    // }
+    if(this.attachVal==null || this.attachVal==undefined || this.attachedVal==null || this.attachedVal==undefined){
+      this.error=true
+      this.errorMsg="Please choose form before click on attach button"
+    }else if(this.attachVal==this.attachedVal){
+      this.error=true
+      this.errorMsg="Forms must be different to be attached"
+    }else if(this.showAttached==false){
+      this.error=true
+      this.errorMsg="Please add another form before attach"
+    }
+    else{
+      this.error=false
+      this.errorMsg=""
+      switch (`${this.attachVal}${this.attachedVal}`) {
+        case "createIdentityElementcontactIdentifiersElement":
+          this.line[this.attachedNumber]=new LeaderLine(this.createIdentityElement.nativeElement, this.contactIdentifiersElement.nativeElement, {color: 'black', size: 4, endLabel: `${this.attachedNumber}: ${this.transmittedInfo}`});
+          this.attachTrack.push({
+            index:this.attachedNumber,
+            attach:this.createIdentityElement,
+            attached:this.contactIdentifiersElement,
+            link:`${this.attachedNumber}: ${this.transmittedInfo}`
+          })
+          this.dettachTracks.push(`${this.attachedNumber}: ${this.transmittedInfo}`)
+          this.detachState=true
+          this.attachedNumber++
+        break;
+        case "createIdentityElementgetIdentifiers":
+          this.line[this.attachedNumber]=new LeaderLine(this.createIdentityElement.nativeElement, this.getIdentifiersElement.nativeElement, {color: 'black', size: 4, endLabel: `${this.attachedNumber}: ${this.transmittedInfo}`});
+          this.attachTrack.push({
+            index:this.attachedNumber,
+            attach:this.createIdentityElement,
+            attached:this.getIdentifiersElement,
+            link:`${this.attachedNumber}: ${this.transmittedInfo}`
+          })
+          this.dettachTracks.push(`${this.attachedNumber}: ${this.transmittedInfo}`)
+          this.detachState=true
+          this.attachedNumber++
+        break;
+        case "getIdentifierscontactIdentifiersElement":
+          this.line[this.attachedNumber]=new LeaderLine(this.getIdentifiersElement.nativeElement, this.contactIdentifiersElement.nativeElement, {color: 'black', size: 4, endLabel: `${this.attachedNumber}: ${this.transmittedInfo}`});
+          this.attachTrack.push({
+            index:this.attachedNumber,
+            attach:this.getIdentifiersElement,
+            attached:this.contactIdentifiersElement,
+            link:`${this.attachedNumber}: ${this.transmittedInfo}`
+          })
+          this.dettachTracks.push(`${this.attachedNumber}: ${this.transmittedInfo}`)
+          this.detachState=true
+          this.attachedNumber++
+        break;
+      }
+    }
   }
 
   detach() {
-    // if (this.dettachedVal!=null ||this.dettachedVal!=undefined ) {
-    //   this.attachTrack=this.attachTrack.filter(elem=>elem.link!=this.dettachedVal)
-    //   const index=this.dettachedVal.split(' ')[1]
-    //   this.line[index].remove()
-    //   this.dettachTracks=this.dettachTracks.filter(elem=>elem!=this.dettachedVal)
-    //   if(this.attachTrack.length==0){
-    //     this.detachState=false
-    //   }
-    // }
+    if (this.dettachedVal!=null ||this.dettachedVal!=undefined ) {
+      this.attachTrack=this.attachTrack.filter(elem=>elem.link!=this.dettachedVal)
+      const index=this.dettachedVal.split(':')[0]
+      this.line[index].remove()
+      this.dettachTracks=this.dettachTracks.filter(elem=>elem!=this.dettachedVal)
+      if(this.attachTrack.length==0){
+        this.detachState=false
+      }
+    }
+  }
+
+  //to be updated later!!!
+  run(){
+    return new Promise( (resolve, reject)=>{
+      this.attachTrack.forEach(follow=>{
+        console.log(follow.attached.nativeElement.id)
+        switch (follow.attach.nativeElement.id) {
+          case this.createIdentityElement.nativeElement.id:
+            this.createNewUser(this.createFullIdentity)
+            if(!!follow.link){
+              switch (follow.attached.nativeElement.id) {
+                case this.getIdentifiersElement.nativeElement.id:
+                  console.log('bsachref@gmail.com')
+                  this.getIdentifier.get("email").patchValue(this.createFullIdentity.get("contactIdentifiers").value[0]["value"])
+                  break;
+                case this.contactIdentifiersElement.nativeElement.id:
+                  this.modifiedContactIdentifier.get("value").patchValue(this.createFullIdentity.get("contactIdentifiers").value[0]["value"])
+                  break;
+              }
+            }
+            resolve(true)
+            break;
+        }
+      })
+    })
   }
 
   ngOnDestroy(): void {
