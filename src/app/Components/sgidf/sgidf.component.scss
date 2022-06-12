@@ -49,9 +49,14 @@
     box-sizing: border-box;
 }
 
-.createIdentityElement{
-    width: 500px;;
-    padding: 5px;
+.IdentifiersElem{
+    display: none;
+    position: absolute;
+    top: 0;
+    border: solid;
+    width: max-content;
+    height: max-content;
+    z-index: 0;
 }
 
 .btn btn-info {
@@ -59,7 +64,7 @@ margin-left: 40px;
 }
 
 
-.getIdentifierElement {
+.contactIdentifiersElem {
     display: none;
     position: absolute;
     top: 0;
@@ -69,17 +74,17 @@ margin-left: 40px;
     z-index: 1;
 }
 
-.createIdenifierElement {
+.createIdentityElement {
     display: none;
     position: absolute;
     top: 0;
     border: solid;
-    width: 10%;
-    height:10%;
+    width: 540px;;
+    height: max-content;
     z-index: 2;
 }
 
-.getIdentityElement {
+.contactIdentifiersElement {
     display: none;
     position: absolute;
     top: 0;
@@ -89,7 +94,7 @@ margin-left: 40px;
     z-index: 3;
 }
 
-.getContactIdentifierElement {
+.getIdentifiersElement {
     display: none;
     position: absolute;
     top: 0;

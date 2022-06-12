@@ -8,12 +8,15 @@ import { SgidfService } from 'src/app/Services/sgidf.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { NotificationService } from 'src/app/Services/notification.service';
+import { DataService } from 'src/app/Services/data.service';
+import { Router } from '@angular/router';
 
 declare let LeaderLine: any;
 
 interface idaasForm {
   name: string;
   value: string;
+  tooltip:string
 }
 
 @Component({
@@ -25,15 +28,29 @@ export class SgidfComponent implements OnInit, OnDestroy {
 
   createIdentityElementSbs = new Subscription
 
+  zoom=1
   error: boolean = false
   errorMsg: string = ""
   dragPosition = { x: 0, y: 0 };
   line = []
   attachedNumber: number = 1
   sgidfForms: idaasForm[] = [
-    { name: "create new Identity", value: "createIdentityElement" },
-    { name: "contact identifier", value: "contactIdentifiersElement" },
-    { name: "get Identitier ID", value: "getIdentifiers" },
+    { 
+      name: "create new Identity",
+      value: "createIdentityElement",
+      tooltip:`
+      contact identifier\nget Identitier ID`
+    },
+    { 
+      name: "contact identifier",
+      value: "contactIdentifiersElement",
+      tooltip:`get Identitier ID`
+    },
+    { 
+      name: "get Identitier ID",
+      value: "getIdentifiers",
+      tooltip:"none"
+    },
   ]
   elements = []
   selectedValue: string = ""
@@ -93,6 +110,7 @@ export class SgidfComponent implements OnInit, OnDestroy {
   }
 
   @ViewChild("parent", { static: false }) parentDiv: ElementRef
+  @ViewChild("row", { static: false }) rowElem: ElementRef
   @ViewChild('createIdentityElement', { read: ElementRef, static: false }) createIdentityElement: ElementRef;
   @ViewChild('IdentifiersElem', { read: ElementRef, static: false }) IdentifiersElem: ElementRef;
   @ViewChild('contactIdentifiersElem', { read: ElementRef, static: false }) contactIdentifiersElem: ElementRef;
@@ -103,7 +121,9 @@ export class SgidfComponent implements OnInit, OnDestroy {
     private renderer: Renderer2,
     private SGIDFSvc: SgidfService,
     private formBuilder: FormBuilder,
-    private notification :NotificationService
+    private notification :NotificationService,
+    private dataSvc:DataService,
+    private router:Router
   ) { }
 
 
@@ -145,7 +165,6 @@ export class SgidfComponent implements OnInit, OnDestroy {
     return this.createFullIdentity.controls["contactIdentifiers"] as FormArray;
   }
 
-
   get getIdentifiersForm() {
     return this.createFullIdentity.controls["identifiers"] as FormArray;
   }
@@ -184,16 +203,31 @@ export class SgidfComponent implements OnInit, OnDestroy {
   ngOnInit() {
   }
 
-  addNewCompany() {
-    let control = <FormArray>this.createFullIdentity.controls.identifiers;
-    control.push(
-      this.formBuilder.group({
-        provider: [''],
-        type: [''],
-        value: ['']
-      })
-    )
+  zoomOut(){
+    this.zoom+=0.1
+    this.renderer.setStyle(this.rowElem.nativeElement,"transform", `scale(${this.zoom})`)
+    this.renderer.setStyle(this.rowElem.nativeElement,"margin-top", `5%`)
+    this.renderer.setStyle(this.parentDiv.nativeElement,"margin-top", `5%`)
+    this.updatePosition()
   }
+
+  zoomIn(){
+    this.zoom-=0.1
+    this.renderer.setStyle(this.rowElem.nativeElement,"transform", `scale(${this.zoom})`)
+    this.renderer.setStyle(this.rowElem.nativeElement,"margin-top", `5%`)
+    this.updatePosition()
+  }
+
+  // addNewCompany() {
+  //   let control = <FormArray>this.createFullIdentity.controls.identifiers;
+  //   control.push(
+  //     this.formBuilder.group({
+  //       provider: [''],
+  //       type: [''],
+  //       value: ['']
+  //     })
+  //   )
+  // }
 
   insertIdentityElement(){
     this.getIdentifiersForm.push(this.IdentifiersForms)
@@ -206,12 +240,14 @@ export class SgidfComponent implements OnInit, OnDestroy {
   createNewUser(form: FormGroup) {
     this.createIdentityElementSbs = this.SGIDFSvc.creatIdentity(form.value).subscribe(
       createIdentityRes => {
+        console.log('createIdentityRes')
         this.notification.success("Identité crée avec succés")
         console.log(createIdentityRes)
         this.result.push(createIdentityRes["body"])
       },
       (errorRes: HttpErrorResponse) => {
         console.log(errorRes)
+        this.result.push(errorRes["error"])
         if (errorRes.status == 400) {
           this.error = true
           this.errorMsg = 'Error creating user'
@@ -219,6 +255,8 @@ export class SgidfComponent implements OnInit, OnDestroy {
           this.error = true
           this.errorMsg = "server error, please try later"
         }
+        this.dataSvc.update(this.result)
+        this.router.navigate(["./result"])
       }
     )
   }
@@ -230,6 +268,7 @@ export class SgidfComponent implements OnInit, OnDestroy {
         body: form.value
       }).subscribe(contactIdentifiersFnRes => {
         console.log(contactIdentifiersFnRes)
+        this.result.push(contactIdentifiersFnRes["body"])
         this.notification.success("ContactIdentifier  modifié avec succés!!!!")
 
       },
@@ -248,8 +287,8 @@ export class SgidfComponent implements OnInit, OnDestroy {
   getIdentifierId(form: FormGroup) {
     this.SGIDFSvc.getIdentifier(form.value).subscribe(identifierRes => {
       console.log(identifierRes)
+      this.result.push(identifierRes["body"])
       this.notification.success("get user ID")
-
     },
       (errorRes: HttpErrorResponse) => {
         console.log(errorRes)
@@ -432,6 +471,7 @@ export class SgidfComponent implements OnInit, OnDestroy {
     }
   }
 
+  //to be updated
   detach() {
     if (this.dettachedVal!=null ||this.dettachedVal!=undefined ) {
       this.attachTrack=this.attachTrack.filter(elem=>elem.link!=this.dettachedVal)
@@ -444,29 +484,31 @@ export class SgidfComponent implements OnInit, OnDestroy {
     }
   }
 
-  //to be updated later!!!
+  //to be updated
   run(){
     return new Promise( (resolve, reject)=>{
       this.attachTrack.forEach(follow=>{
-        console.log(follow.attached.nativeElement.id)
         switch (follow.attach.nativeElement.id) {
           case this.createIdentityElement.nativeElement.id:
             this.createNewUser(this.createFullIdentity)
             if(!!follow.link){
               switch (follow.attached.nativeElement.id) {
-                case this.getIdentifiersElement.nativeElement.id:
-                  console.log('bsachref@gmail.com')
-                  this.getIdentifier.get("email").patchValue(this.createFullIdentity.get("contactIdentifiers").value[0]["value"])
-                  break;
                 case this.contactIdentifiersElement.nativeElement.id:
                   this.modifiedContactIdentifier.get("value").patchValue(this.createFullIdentity.get("contactIdentifiers").value[0]["value"])
+                  this.contactIdentifiersFn(this.modifiedContactIdentifier)
+                  break;
+                case this.getIdentifiersElement.nativeElement.id:
+                  this.getIdentifier.get("email").patchValue(this.createFullIdentity.get("contactIdentifiers").value[0]["value"])
+                  this.getIdentifierId(this.getIdentifier)
                   break;
               }
             }
-            resolve(true)
+            // resolve(true)
             break;
         }
       })
+      this.dataSvc.update(this.result)
+      this.router.navigate(["../result"])
     })
   }
 

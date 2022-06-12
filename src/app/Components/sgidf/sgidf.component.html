@@ -1,28 +1,30 @@
 <div class="container-fluid">
-  <div class="row">
+  <div class="row" style="display:flex ;">
     <div class="col-sm-12 col-md-12 col-lg-12 bg-primary mt-2" *ngIf="error==true">
       <p>
         {{errorMsg}}
       </p>
     </div>
-    <div class="col-sm-12 col-md-12 col-lg-12 bg-black mt-2" style="display: block; position:relative">
+    <div class="col-sm-12 col-md-12 col-lg-12 bg-black mt-2" style="display: block; position:relative;">
+      <button *ngIf="show==true" style='font-size:24px; ' class="bg-secondary" (click)="zoomOut()"><i class="fa fa-arrows-alt" style="color:white ;"></i></button>
+      <button *ngIf="show==true" style='font-size:24px; margin-left: 1rem; margin-right: 2rem;' class="bg-secondary"  (click)="zoomIn()"><i class='fas fa-compress-arrows-alt'></i></button>
       <mat-form-field>
         <mat-label>Please choose the required forms to display:</mat-label>
         <mat-select [(ngModel)]="selectedValue" (ngModelChange)="nameChanged($event)" ngModel name="sgidfForm">
-          <mat-option *ngFor="let sgidfForm of sgidfForms" [value]="sgidfForm.value">
-            {{sgidfForm.name}}
+          <mat-option  data-bs-toggle="tooltip" data-bs-placement="right" title={{sgidfForm.tooltip}} *ngFor="let sgidfForm of sgidfForms" [value]="sgidfForm.value">
+            {{sgidfForm.name}}  
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <button class="btn btn-primary" (click)="addNewElem()" style="margin-left: 2%; margin-right: 2%;">Add new Forms</button>
+      <button class="btn btn-primary" (click)="addNewElem()" style="margin-left: 2%; margin-right: 2%; ">Add new Forms</button>
 
       <!-- Button trigger modal -->
-      <button *ngIf="show==true" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#attach">
+      <button *ngIf="show==true" type="button" class="btn btn-primary" data-bs-toggle="modal" data-backdrop="show:true" data-bs-target="#attach">
         attach
       </button>
 
       <!-- Modal -->
-      <div class="modal fade" id="attach" tabindex="-1" aria-labelledby="attachLabel" aria-hidden="true">
+      <div class="modal" id="attach" tabindex="0" aria-labelledby="attachLabel" aria-hidden="true" >
         <div class="modal-dialog">
           <div class="modal-content text-body">
             <div class="modal-header text-body">
@@ -72,195 +74,187 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <button type="button" class="btn btn-primary" (click)="detach()"style="margin-left: 2%;">
+      <button type="button" *ngIf="detachState==true" class="btn btn-primary" (click)="detach()"style="margin-left: 2%;">
         Detach
       </button>
-      <button type="button" class="btn btn-primary" (click)="run()"style="margin-left: 2%;">
+      <button *ngIf="show==true" type="button" class="btn btn-primary" (click)="run()"style="margin-left: 2%; margin-right:3%">
         Run
       </button>
+
     </div>
 
-    <div #parent id="parentdiv" class="" style="border:solid; display: block; position:relative">
+    <div #parent id="parentdiv" cdkDrag (cdkDragMoved)="updatePosition()" cdkDragBoundary=".parentdiv-boundary" style="display: block; position:sticky;">
       <div class="container-fluid">
-        <div class="row">
-          <!-- this div will later include all the inserted forms -->
-          <div>
-
-            <!-- Form group contactIdentifiers -->
-            <div #IdentifiersElem id="IdentifiersElem" class="Identifiers col-sm-2 col-md-4 col-lg-3 bg-primary mt-2 mb-2" cdkDrag
-            (cdkDragMoved)="updatePosition()" cdkDragBoundary=".parentdiv-boundary" style="display: none;">         
-              <form [formGroup]="IdentifiersForms" (ngSubmit)="insertIdentityElement()" novalidate>
-                <div class="lesson-form-row">
-                  <h4>identifier:</h4>
-                  <p>
-                    <label selected>identifier type: &nbsp;</label>
-                    <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" formControlName="type">
-                      <option *ngFor="let identifierType of identifierTypes" [ngValue]="identifierType.name"> {{identifierType.name}} </option>
-                    </select>
-                    <br>
-                    Value:&nbsp;
-                    <input type="text" formControlName="value" class="input-Form">
-                    <br>
-                    Provider&nbsp;
-                    <input type="text" formControlName="provider" class="input-Form">
-                  </p>
-                </div>
-                <button class="btn btn-info">insert identifier</button>
-              </form>
-            </div>
-            <div  #contactIdentifiersElem id="contactIdentifiersElem" class="Identifiers col-sm-2 col-md-4 col-lg-3 bg-primary mt-2 mb-2" cdkDrag
-            (cdkDragMoved)="updatePosition()" cdkDragBoundary=".parentdiv-boundary" style="display: none;">
-            <form [formGroup]="contactIdentifiersForms" (ngSubmit)="insertContactIdentityElement()" novalidate>
-              <h4>Contact Identifiers</h4>
+        <div class="row" #row>
+          <!-- Form group contactIdentifiers -->
+          <div #IdentifiersElem id="IdentifiersElem" class="IdentifiersElem col-sm-2 col-md-4 col-lg-3 bg-primary gx-5 gy-5" cdkDrag
+          (cdkDragMoved)="updatePosition()" cdkDragBoundary=".parentdiv-boundary">         
+            <form [formGroup]="IdentifiersForms" (ngSubmit)="insertIdentityElement()" novalidate>
               <div class="lesson-form-row">
+                <h4>identifier:</h4>
                 <p>
-                  <label selected>Type: &nbsp;</label>
-                  <select  class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" formControlName="type">
-                    <option *ngFor="let contactIdentifierType of contactIdentifierTypes" [ngValue]="contactIdentifierType.name"> {{contactIdentifierType.name}} </option>
-                  </select><br>
-                  Value: 
+                  <label selected>type: &nbsp;</label>
+                  <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" formControlName="type">
+                    <option *ngFor="let identifierType of identifierTypes" [ngValue]="identifierType.name"> {{identifierType.name}} </option>
+                  </select>
+                  <br>
+                  Value:&nbsp;
                   <input type="text" formControlName="value" class="input-Form">
+                  <br>
+                  Provider&nbsp;
+                  <input type="text" formControlName="provider" class="input-Form">
                 </p>
               </div>
-              <button class="btn btn-info">insert contact identifier</button>
+              <button class="btn btn-info">insert identifier</button>
             </form>
-            </div>
-            
-            <!-- Create Identity -->
-            <div #createIdentityElement id="createIdentityElement" class="createIdentityElement col-sm-2 col-md-4 col-lg-3 bg-primary mt-2" cdkDrag
-              (cdkDragMoved)="updatePosition()" cdkDragBoundary=".parentdiv-boundary" style="display: none;">
-              <form [formGroup]="createFullIdentity" (ngSubmit)="createNewUser(createFullIdentity)" novalidate>
-                <h4 class="titleCreateIdentity"> Create identity</h4><hr>
-                <!-- Create Identity Profile-->
-                <div>
-                  <!-- Form group Profile -->
-                  <div formGroupName="profile">
-                    <h4>1- Profile</h4>
-                    <p>
-                      <label for="formGroupExampleInput" class="form-label">First name: &nbsp;</label>
-                      <input type="text" name="profileFirstName" formControlName="firstName" class="input-Form">
-                      <label for="formGroupExampleInput" class="form-label">Last name: &nbsp;</label>
-                      <input type="text" name="profileLastName" formControlName="lastName" class="input-Form">
-                    </p>
-                    <p>
-                      <label for="formGroupExampleInput" class="form-label">civility: &nbsp;</label>
-                      <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example"
-                        formControlName="civility">
-                        <option *ngFor="let civility of civilities" [ngValue]="civility.id"> {{civility.name}} </option>
-                      </select>
-                      &nbsp;&nbsp;
-                      <select class="form-select form-select-lg mb-2" aria-label=".form-select-lg example"
-                        formControlName="gender" style="display: none;">
-                        <option *ngFor="let civility of civilities" [ngValue]="civility.id"> {{civility.name}} </option>
-                      </select>
-                      &nbsp;&nbsp;
-                      <label for="formGroupExampleInput" class="form-label">BirthDay:&nbsp;</label>
-                      <input type="date" name="profileBirthDate" formControlName="birthdate" class="input-Form">
-                    </p>
-                  </div>
-
-                  <div formGroupName="password">
-                    <p>
-                      Mot de passe:&nbsp;
-                      <input type="password" formControlName="value" name="identitypassword" class="input-Form">
-                    </p>
-                  </div>
-
-                  <!-- Form group contactIdentifiers -->
-                  <div formArrayName="identifiers">
-                    <h4>identifiers:&nbsp;</h4>
-                    <div *ngFor="let identifierForm of getIdentifiersForm.controls; let i = index">
-                      <div class="lesson-form-row" [formGroup]="identifierForm">
-                        <p>
-                          <label selected>identifierType: &nbsp;</label>
-                          <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" formControlName="type">
-                            <option *ngFor="let identifierType of identifierTypes" [ngValue]="identifierType.name"> {{identifierType.name}} </option>
-                          </select>
-                          &nbsp;&nbsp;
-                          Value:&nbsp;
-                          <input type="text" formControlName="value" class="input-Form">
-                          &nbsp;&nbsp;
-                          Provider&nbsp;
-                          <input type="text" formControlName="provider" class="input-Form">
-                        </p>
-                      </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div formArrayName="contactIdentifiers">
-                    <h4>Contact Identifiers:&nbsp;</h4>
-                     <div *ngFor="let contactForm of getConcatIdentifiers.controls; let i = index">
-                      <div class="lesson-form-row" [formGroup]="contactForm">
-                        <p>
-                          <label selected>ContactidenfierType: &nbsp;</label>
-                          <select  class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" formControlName="type">
-                            <option *ngFor="let contactIdentifierType of contactIdentifierTypes" [ngValue]="contactIdentifierType.name"> {{contactIdentifierType.name}} </option>
-                          </select>
-                          &nbsp;&nbsp;
-                          Value: 
-                          <input type="text" formControlName="value" class="input-Form">
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-              </form>
-            </div>
-
-            <!-- CRUD Contact Identifiers Email/Mobile -->
-            <div #contactIdentifiersElement id="contactIdentifiersElement" class="col-sm-2 col-md-4 col-lg-3 mr-2 ml-2 bg-primary" cdkDrag
-              (cdkDragMoved)="updatePosition()" cdkDragBoundary=".parentdiv-boundary" style="display: none;">
-              <form [formGroup]="modifiedContactIdentifier" (ngSubmit)="contactIdentifiersFn(modifiedContactIdentifier)"
-                novalidate>
-                <h4 class="titleCreateIdentity">Get Contact Identifier</h4>
-                <hr>
-                <h4>Select action: </h4>
-                <p>
-                  <input type="radio" name="action" (cheked)="setAction('update')" (change)="setAction('update')"
-                    class="input-radio"> Update contact Identifier <br>
-                  <input type="radio" name="action" (cheked)="setAction('add')" (change)="setAction('add')"
-                    class="input-radio"> Add contact Identifier <br>
-                  <input type="radio" name="action" (cheked)="setAction('delete')" (change)="setAction('delete')"
-                    class="input-radio"> Delete contact Identifier <br>
-                </p>
-                <div>
-                  <p>
-                    <input type="checkbox" id="isPassword" name="isPassword" formControlName="isPassword"
-                      class="input-radio">
-                    <label for="formGroupExampleInput" class="form-label">Password</label>
-                  </p>
-                  <p>
-                    <label>ContactidenfierType: &nbsp;</label>
-                    <select  class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" formControlName="type">
-                      <option *ngFor="let contactIdentifierType of contactIdentifierTypes" [ngValue]="contactIdentifierType.name"> {{contactIdentifierType.name}} </option>
-                    </select>
-                    Value: &nbsp;
-                    <input type="email" formControlName="value" class="input-Form">
-                  </p>
-                </div>
-                <div class="col-6 mx-auto">
-                  <button type="submit" class="btn btn-info">Update status</button>
-                </div>
-              </form>
-            </div>
-
-            <!-- CRUD get Identifier ID -->
-            <div #getIdentifiersElement id="getIdentifiersElement" class="col-sm-2 col-md-4 col-lg-3 bg-primary" cdkDrag (cdkDragMoved)="updatePosition()"
-              cdkDragBoundary=".parentdiv-boundary" style="display: none;">
-              <form [formGroup]="getIdentifier" (ngSubmit)="getIdentifierId(getIdentifier)" novalidate>
-                <h4 class="titleCreateIdentity">Get Identity</h4>
-                <hr>
-                <div>
-                  <label for="formGroupExampleInput" class="form-label">Email :</label>
-                  <input type="email" name="getIdentifierEmail" required formControlName="email" class="input-Form">
-                </div>
-                <div class="col-6 mx-auto">
-                  <button type="submit" class="btn btn-info">Get user ID</button>
-                </div>
-              </form>
-            </div>
-
           </div>
+
+          <div #contactIdentifiersElem id="contactIdentifiersElem" class="contactIdentifiersElem col-sm-2 col-md-4 col-lg-3 bg-primary gx-5 gy-5" cdkDrag
+          (cdkDragMoved)="updatePosition()" cdkDragBoundary=".parentdiv-boundary">
+          <form [formGroup]="contactIdentifiersForms" (ngSubmit)="insertContactIdentityElement()" novalidate>
+            <h4>Contact Identifiers</h4>
+            <div class="lesson-form-row">
+              <p>
+                <label selected>Type: &nbsp;</label>
+                <select  class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" formControlName="type">
+                  <option *ngFor="let contactIdentifierType of contactIdentifierTypes" [ngValue]="contactIdentifierType.name"> {{contactIdentifierType.name}} </option>
+                </select><br>
+                Value: 
+                <input type="text" formControlName="value" class="input-Form">
+              </p>
+            </div>
+            <button class="btn btn-info">insert contact identifier</button>
+          </form>
+          </div>
+          
+          <!-- Create Identity -->
+          <div #createIdentityElement id="createIdentityElement" class="createIdentityElement col-sm-2 col-md-4 col-lg-3 bg-primary gx-5 gy-5" cdkDrag
+            (cdkDragMoved)="updatePosition()" cdkDragBoundary=".parentdiv-boundary">
+            <form [formGroup]="createFullIdentity" (ngSubmit)="createNewUser(createFullIdentity)" novalidate>
+              <h4 class="titleCreateIdentity"> Create identity</h4><hr>
+              <!-- Create Identity Profile-->
+              <div>
+                <!-- Form group Profile -->
+                <div formGroupName="profile">
+                  <h4>1- Profile</h4>
+                  <p>
+                    <label for="formGroupExampleInput" class="form-label">First name: &nbsp;</label>
+                    <input type="text" name="profileFirstName" formControlName="firstName" class="input-Form">
+                    <label for="formGroupExampleInput" class="form-label">Last name: &nbsp;</label>
+                    <input type="text" name="profileLastName" formControlName="lastName" class="input-Form">
+                  </p>
+                  <p>
+                    <label for="formGroupExampleInput" class="form-label">civility: &nbsp;</label>
+                    <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example"
+                      formControlName="civility">
+                      <option *ngFor="let civility of civilities" [ngValue]="civility.id"> {{civility.name}} </option>
+                    </select>
+                    &nbsp;&nbsp;
+                    <select class="form-select form-select-lg mb-2" aria-label=".form-select-lg example"
+                      formControlName="gender" style="display: none;">
+                      <option *ngFor="let civility of civilities" [ngValue]="civility.id"> {{civility.name}} </option>
+                    </select>
+                    &nbsp;&nbsp;
+                    <label for="formGroupExampleInput" class="form-label">BirthDay:&nbsp;</label>
+                    <input type="date" name="profileBirthDate" formControlName="birthdate" class="input-Form">
+                  </p>
+                </div>
+
+                <div formGroupName="password">
+                  <p>
+                    Mot de passe:&nbsp;
+                    <input type="password" formControlName="value" name="identitypassword" class="input-Form">
+                  </p>
+                </div>
+
+                <!-- Form group contactIdentifiers -->
+                <div formArrayName="identifiers">
+                  <h4>identifiers:&nbsp;</h4>
+                  <div *ngFor="let identifierForm of getIdentifiersForm.controls; let i = index">
+                    <div class="lesson-form-row" [formGroup]="identifierForm">
+                      <p>
+                        <label selected>identifierType: &nbsp;</label>
+                        <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" formControlName="type">
+                          <option *ngFor="let identifierType of identifierTypes" [ngValue]="identifierType.name"> {{identifierType.name}} </option>
+                        </select>
+                        &nbsp;&nbsp;
+                        Value:&nbsp;
+                        <input type="text" formControlName="value" class="input-Form">
+                        &nbsp;&nbsp;
+                        Provider&nbsp;
+                        <input type="text" formControlName="provider" class="input-Form">
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div formArrayName="contactIdentifiers">
+                <h4>Contact Identifiers:&nbsp;</h4>
+                  <div *ngFor="let contactForm of getConcatIdentifiers.controls; let i = index">
+                  <div class="lesson-form-row" [formGroup]="contactForm">
+                    <p>
+                      <label selected>type: &nbsp;</label>
+                      <select  class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" formControlName="type">
+                        <option *ngFor="let contactIdentifierType of contactIdentifierTypes" [ngValue]="contactIdentifierType.name"> {{contactIdentifierType.name}} </option>
+                      </select>
+                      &nbsp;&nbsp;
+                      Value: 
+                      <input type="text" formControlName="value" class="input-Form">
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <!-- CRUD Contact Identifiers Email/Mobile -->
+          <div #contactIdentifiersElement id="contactIdentifiersElement" class="contactIdentifiersElement col-sm-2 col-md-4 col-lg-3 gx-5 gy-5 bg-primary" cdkDrag
+            (cdkDragMoved)="updatePosition()" cdkDragBoundary=".parentdiv-boundary">
+            <form [formGroup]="modifiedContactIdentifier" (ngSubmit)="contactIdentifiersFn(modifiedContactIdentifier)"
+              novalidate>
+              <h4 class="titleCreateIdentity">Get Contact Identifier</h4>
+              <hr>
+              <h4>Select action: </h4>
+              <p>
+                <input type="radio" name="action" (cheked)="setAction('update')" (change)="setAction('update')"
+                  class="input-radio"> Update contact Identifier <br>
+                <input type="radio" name="action" (cheked)="setAction('add')" (change)="setAction('add')"
+                  class="input-radio"> Add contact Identifier <br>
+                <input type="radio" name="action" (cheked)="setAction('delete')" (change)="setAction('delete')"
+                  class="input-radio"> Delete contact Identifier <br>
+              </p>
+              <div>
+                <p>
+                  <input type="checkbox" id="isPassword" name="isPassword" formControlName="isPassword"
+                    class="input-radio">
+                  <label for="formGroupExampleInput" class="form-label">Password</label>
+                </p>
+                <p>
+                  <label>ContactidenfierType: &nbsp;</label>
+                  <select  class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" formControlName="type">
+                    <option *ngFor="let contactIdentifierType of contactIdentifierTypes" [ngValue]="contactIdentifierType.name"> {{contactIdentifierType.name}} </option>
+                  </select>
+                  Value: &nbsp;
+                  <input type="email" formControlName="value" class="input-Form">
+                </p>
+              </div>
+            </form>
+          </div>
+
+          <!-- CRUD get Identifier ID -->
+          <div #getIdentifiersElement id="getIdentifiersElement" class="getIdentifiersElement col-sm-2 col-md-4 col-lg-3 bg-primary gx-5 gy-5" cdkDrag (cdkDragMoved)="updatePosition()"
+            cdkDragBoundary=".parentdiv-boundary">
+            <form [formGroup]="getIdentifier" (ngSubmit)="getIdentifierId(getIdentifier)" novalidate>
+              <h4 class="titleCreateIdentity">Get Identity</h4>
+              <hr>
+              <div>
+                <label for="formGroupExampleInput" class="form-label">Email :</label>
+                <input type="email" name="getIdentifierEmail" required formControlName="email" class="input-Form">
+              </div>
+            </form>
+          </div>
+          
         </div>
       </div>
     </div>
