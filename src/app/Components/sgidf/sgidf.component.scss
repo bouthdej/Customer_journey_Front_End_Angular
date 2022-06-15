@@ -49,67 +49,93 @@
     box-sizing: border-box;
 }
 
-.IdentifiersElem{
-    display: none;
-    position: absolute;
-    top: 0;
-    border: solid;
-    width: max-content;
-    height: max-content;
-    z-index: 0;
-}
-
 .btn btn-info {
-margin-left: 40px;
+    margin-left: 40px;
 }
 
+// .IdentifiersElem{
+//     display: none;
+//     scale: 0.8;
+//     position: absolute;
+//     top: 0;
+//     border: solid;
+//     width: max-content;
+//     height: max-content;
+//     z-index: 0;
+// }
 
-.contactIdentifiersElem {
-    display: none;
-    position: absolute;
-    top: 0;
-    border: solid;
-    width: max-content;
-    height: max-content;
-    z-index: 1;
+// .contactIdentifiersElem {
+//     display: none;
+//     scale: 0.8;
+//     position: absolute;
+//     top: 0;
+//     border: solid;
+//     width: max-content;
+//     height: max-content;
+//     z-index: 1;
+// }
+
+// .createIdentityElement {
+//     display: none;
+//     scale: 0.8;
+//     position: absolute;
+//     top: 0;
+//     border: solid;
+//     width: 540px;
+//     height: max-content;
+//     z-index: 2;
+// }
+
+// .contactIdentifiersElement {
+//     display: none;
+//     scale: 0.8;
+//     position: absolute;
+//     top: 0;
+//     border: solid;
+//     width: max-content;
+//     height: max-content;
+//     z-index: 3;
+// }
+
+// .getIdentifiersElement {
+//     display: none;
+//     scale: 0.8;
+//     position: absolute;
+//     top: 0;
+//     border: solid;
+//     width: max-content;
+//     height: max-content;
+//     z-index: 4;
+// }
+
+// .updateIdentityPwdElement {
+//     display: none;
+//     scale: 0.8;
+//     position: absolute;
+//     top: 0;
+//     border: solid;
+//     width: max-content;
+//     height: max-content;
+//     z-index: 5;
+// }
+
+.modal-backdrop.fade.show{
+    display:none;
 }
 
-.createIdentityElement {
+.modal-backdrop {
     display: none;
-    position: absolute;
+    scale: 0.8;
+    position: fixed;
     top: 0;
-    border: solid;
-    width: 540px;;
-    height: max-content;
-    z-index: 2;
+    left: 0;
+    z-index: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #000;
 }
-
-.contactIdentifiersElement {
-    display: none;
-    position: absolute;
-    top: 0;
-    border: solid;
-    width: max-content;
-    height: max-content;
-    z-index: 3;
-}
-
-.getIdentifiersElement {
-    display: none;
-    position: absolute;
-    top: 0;
-    border: solid;
-    width: max-content;
-    height: max-content;
-    z-index: 4;
-}
-
-.updateIdentityPwdElement {
-    display: none;
-    position: absolute;
-    top: 0;
-    border: solid;
-    width: max-content;
-    height: max-content;
-    z-index: 5;
+  
+.modal {
+//modal custom bachground/shadow
+background: rgba(0,0,0,0.5);
 }

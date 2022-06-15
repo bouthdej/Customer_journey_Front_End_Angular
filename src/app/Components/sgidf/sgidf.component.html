@@ -5,7 +5,49 @@
         {{errorMsg}}
       </p>
     </div>
-    <div class="col-sm-12 col-md-12 col-lg-12 bg-black mt-2" style="display: block; position:relative;">
+    <!-- Modal -->
+    <div class="modal" id="attach" tabindex="-1" aria-labelledby="attachLabel" aria-hidden="false">
+      <div class="modal-dialog">
+        <div class="modal-content text-body">
+          <div class="modal-header text-body">
+            <h5 class="modal-title">Attach forms</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" style="color:white;"><span class="visually-hidden">Close</span></button>
+          </div>
+          <div class="modal-body text-body">
+            <label>Attach from:</label> <br>
+            <input class="form-check-input" type="radio" name="attachVal" id="attachVal">
+            <label class="form-check-label" for="attachVal">
+              None
+            </label>
+            <div class="form-check text-body" *ngFor="let attachForm of attachForms">
+              <input #radioEvent class="form-check-input text-body" type="radio" name="attachVal" id="attachVal" (click)="updateAttachedVal(attachForm.value)">
+              <label class="form-check-label text-body" for="attachVal">
+                {{attachForm.name}}
+              </label>
+            </div>
+            &nbsp;
+            <div *ngIf="showAttached==true">
+              <label class="text-body">Attach to:</label>
+              <div class="form-check text-body" *ngFor="let allowedForm of allowedForms">
+                <input #radioEvent class="form-check-input text-body" type="radio" (click)="setAttachedVal(allowedForm.value)" name="attachedVal" id="attachedVal">
+                <label class="form-check-label text-body" for="attachedVal">
+                  {{allowedForm.name}}
+                </label>
+              </div>
+              <select class="form-select form-select-lg mb-3 text-body" aria-label=".form-select-lg example" [(ngModel)]="transmittedInfo" (ngModelChange)="updateTransmittedInfo(transmittedInfo)" name="transmittedInfo" ngDefaultControl>
+              <option class="text-body" *ngFor="let transmittedInfo of transmittedInfos" [ngValue]="transmittedInfo" > {{transmittedInfo}} </option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" *ngIf="show==true" class="btn btn-primary" (click)="attach()" data-bs-dismiss="modal"
+            style="margin-left: 2%;">Attach</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-12 col-md-12 col-lg-12 bg-black mt-2" style="display: block; position:relative; z-index: 1;">
       <button *ngIf="show==true" style='font-size:24px; ' class="bg-secondary" (click)="zoomOut()"><i class="fa fa-arrows-alt" style="color:white ;"></i></button>
       <button *ngIf="show==true" style='font-size:24px; margin-left: 1rem; margin-right: 2rem;' class="bg-secondary"  (click)="zoomIn()"><i class='fas fa-compress-arrows-alt'></i></button>
       <mat-form-field>
@@ -16,55 +58,12 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <button class="btn btn-primary" (click)="addNewElem()" style="margin-left: 2%; margin-right: 2%; ">Add new Forms</button>
+      <button class="btn btn-primary" (click)="addNewElem()" style="margin-left: 2%; margin-right: 2%;">Add new Forms</button>
 
       <!-- Button trigger modal -->
-      <button *ngIf="show==true" type="button" class="btn btn-primary" data-bs-toggle="modal" data-backdrop="show:true" data-bs-target="#attach">
+      <button *ngIf="show==true" type="button" class="btn btn-primary" data-backdrop="false" data-bs-toggle="modal" data-bs-target="#attach">
         attach
       </button>
-
-      <!-- Modal -->
-      <div class="modal" id="attach" tabindex="0" aria-labelledby="attachLabel" aria-hidden="true" >
-        <div class="modal-dialog">
-          <div class="modal-content text-body">
-            <div class="modal-header text-body">
-              <h5 class="modal-title">Attach forms</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" style="color:white;"><span class="visually-hidden">Close</span></button>
-            </div>
-            <div class="modal-body text-body">
-              <label>Attach from:</label> <br>
-              <input class="form-check-input" type="radio" name="attachVal" id="attachVal">
-              <label class="form-check-label" for="attachVal">
-                None
-              </label>
-              <div class="form-check text-body" *ngFor="let attachForm of attachForms">
-                <input #radioEvent class="form-check-input text-body" type="radio" name="attachVal" id="attachVal" (click)="updateAttachedVal(attachForm.value)">
-                <label class="form-check-label text-body" for="attachVal">
-                  {{attachForm.name}}
-                </label>
-              </div>
-              &nbsp;
-              <div *ngIf="showAttached==true">
-                <label class="text-body">Attach to:</label>
-                <div class="form-check text-body" *ngFor="let allowedForm of allowedForms">
-                  <input #radioEvent class="form-check-input text-body" type="radio" (click)="setAttachedVal(allowedForm.value)" name="attachedVal" id="attachedVal">
-                  <label class="form-check-label text-body" for="attachedVal">
-                    {{allowedForm.name}}
-                  </label>
-                </div>
-                <select class="form-select form-select-lg mb-3 text-body" aria-label=".form-select-lg example" [(ngModel)]="transmittedInfo" (ngModelChange)="updateTransmittedInfo(transmittedInfo)" name="transmittedInfo" ngDefaultControl>
-                <option class="text-body" *ngFor="let transmittedInfo of transmittedInfos" [ngValue]="transmittedInfo" > {{transmittedInfo}} </option>
-                </select>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" *ngIf="show==true" class="btn btn-primary" (click)="attach()" data-bs-dismiss="modal"
-              style="margin-left: 2%;">Attach</button>
-              <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-            </div>
-          </div>
-        </div>
-      </div>
 
       <mat-form-field *ngIf="detachState==true" style="margin-left: 2%;">
         <mat-label>Detach:</mat-label>
@@ -83,12 +82,12 @@
 
     </div>
 
-    <div #parent id="parentdiv" cdkDrag (cdkDragMoved)="updatePosition()" cdkDragBoundary=".parentdiv-boundary" style="display: block; position:sticky;">
+    <div class="col-sm-12 col-md-12 col-lg-12 mt-2" #parent id="parentdiv" style="display: block; position:relative;">
       <div class="container-fluid">
-        <div class="row" #row>
+        <div class="row" #row cdkDrag (cdkDragMoved)="updatePosition()" cdkDragBoundary=".parentdiv-boundary">
           <!-- Form group contactIdentifiers -->
-          <div #IdentifiersElem id="IdentifiersElem" class="IdentifiersElem col-sm-2 col-md-4 col-lg-3 bg-primary gx-5 gy-5" cdkDrag
-          (cdkDragMoved)="updatePosition()" cdkDragBoundary=".parentdiv-boundary">         
+          <div #IdentifiersElem id="IdentifiersElem" class="IdentifiersElem col-sm-2 col-md-4 col-lg-3 bg-primary ml-2" cdkDrag
+          (cdkDragMoved)="updatePosition()" cdkDragBoundary=".parentdiv-boundary" style="height:max-content; display:none; position:relative; margin: 2rem;">         
             <form [formGroup]="IdentifiersForms" (ngSubmit)="insertIdentityElement()" novalidate>
               <div class="lesson-form-row">
                 <h4>identifier:</h4>
@@ -109,8 +108,8 @@
             </form>
           </div>
 
-          <div #contactIdentifiersElem id="contactIdentifiersElem" class="contactIdentifiersElem col-sm-2 col-md-4 col-lg-3 bg-primary gx-5 gy-5" cdkDrag
-          (cdkDragMoved)="updatePosition()" cdkDragBoundary=".parentdiv-boundary">
+          <div #contactIdentifiersElem id="contactIdentifiersElem" class="contactIdentifiersElem col-sm-2 col-md-4 col-lg-3 bg-primary ml-2" cdkDrag
+          (cdkDragMoved)="updatePosition()" cdkDragBoundary=".parentdiv-boundary" style="height:max-content; display:none; position:relative; margin: 2rem;">
           <form [formGroup]="contactIdentifiersForms" (ngSubmit)="insertContactIdentityElement()" novalidate>
             <h4>Contact Identifiers</h4>
             <div class="lesson-form-row">
@@ -128,15 +127,15 @@
           </div>
           
           <!-- Create Identity -->
-          <div #createIdentityElement id="createIdentityElement" class="createIdentityElement col-sm-2 col-md-4 col-lg-3 bg-primary gx-5 gy-5" cdkDrag
-            (cdkDragMoved)="updatePosition()" cdkDragBoundary=".parentdiv-boundary">
+          <div #createIdentityElement id="createIdentityElement" class="createIdentityElement col-sm-2 col-md-4 col-lg-3 bg-primary ml-2" cdkDrag
+            (cdkDragMoved)="updatePosition()" cdkDragBoundary=".parentdiv-boundary" style="width: 540px; height:max-content; display:none; position:relative; margin: 2rem;">
             <form [formGroup]="createFullIdentity" (ngSubmit)="createNewUser(createFullIdentity)" novalidate>
               <h4 class="titleCreateIdentity"> Create identity</h4><hr>
               <!-- Create Identity Profile-->
               <div>
                 <!-- Form group Profile -->
                 <div formGroupName="profile">
-                  <h4>1- Profile</h4>
+                  <h4>Profile</h4>
                   <p>
                     <label for="formGroupExampleInput" class="form-label">First name: &nbsp;</label>
                     <input type="text" name="profileFirstName" formControlName="firstName" class="input-Form">
@@ -150,9 +149,10 @@
                       <option *ngFor="let civility of civilities" [ngValue]="civility.id"> {{civility.name}} </option>
                     </select>
                     &nbsp;&nbsp;
+                    <label for="formGroupExampleInput" class="form-label">Gender: &nbsp;</label>
                     <select class="form-select form-select-lg mb-2" aria-label=".form-select-lg example"
-                      formControlName="gender" style="display: none;">
-                      <option *ngFor="let civility of civilities" [ngValue]="civility.id"> {{civility.name}} </option>
+                      formControlName="gender">
+                      <option *ngFor="let civility of civilities" [ngValue]="civility.id"> {{civility.val}} </option>
                     </select>
                     &nbsp;&nbsp;
                     <label for="formGroupExampleInput" class="form-label">BirthDay:&nbsp;</label>
@@ -209,8 +209,8 @@
           </div>
 
           <!-- CRUD Contact Identifiers Email/Mobile -->
-          <div #contactIdentifiersElement id="contactIdentifiersElement" class="contactIdentifiersElement col-sm-2 col-md-4 col-lg-3 gx-5 gy-5 bg-primary" cdkDrag
-            (cdkDragMoved)="updatePosition()" cdkDragBoundary=".parentdiv-boundary">
+          <div #contactIdentifiersElement id="contactIdentifiersElement" class="contactIdentifiersElement col-sm-2 col-md-4 col-lg-3 ml-2 bg-primary" cdkDrag
+            (cdkDragMoved)="updatePosition()" cdkDragBoundary=".parentdiv-boundary" style="height:max-content; display:none; position:relative; margin: 2rem;">
             <form [formGroup]="modifiedContactIdentifier" (ngSubmit)="contactIdentifiersFn(modifiedContactIdentifier)"
               novalidate>
               <h4 class="titleCreateIdentity">Get Contact Identifier</h4>
@@ -243,8 +243,8 @@
           </div>
 
           <!-- CRUD get Identifier ID -->
-          <div #getIdentifiersElement id="getIdentifiersElement" class="getIdentifiersElement col-sm-2 col-md-4 col-lg-3 bg-primary gx-5 gy-5" cdkDrag (cdkDragMoved)="updatePosition()"
-            cdkDragBoundary=".parentdiv-boundary">
+          <div #getIdentifiersElement id="getIdentifiersElement" class="getIdentifiersElement col-sm-2 col-md-4 col-lg-3 bg-primary ml-2" cdkDrag (cdkDragMoved)="updatePosition()"
+            cdkDragBoundary=".parentdiv-boundary" style="height:max-content; display:none; position:relative; margin: 2rem;">
             <form [formGroup]="getIdentifier" (ngSubmit)="getIdentifierId(getIdentifier)" novalidate>
               <h4 class="titleCreateIdentity">Get Identity</h4>
               <hr>
