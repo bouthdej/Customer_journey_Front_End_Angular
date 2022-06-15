@@ -8,11 +8,7 @@ import { pipe } from 'rxjs';
 })
 export class SgidfService {
 
-  private backEndUrl="http://localhost:8181/costumerjourney/v1"
-
-  
-
-  
+  private backEndUrl="http://localhost:8181/costumerjourney/v1"  
  
   constructor(
     private _http: HttpClient
@@ -45,56 +41,42 @@ export class SgidfService {
   }
 
   creatIdentity(data){
-    console.log(data)
+    console.log("[SGIDF Service] creatIdentity")
     let header= new HttpHeaders()
     .set('content-type', 'application/json')
     let createIdentityUrl = `${this.backEndUrl}/identities`;
-    return this._http.post(createIdentityUrl, data, {'headers':header}).pipe(
-      retry(3)
-    );
+    return this._http.post(createIdentityUrl, data, {'headers':header})
   }
 
   updateContactIdentifiers(data){
-    console.log(data)
-
+    console.log("[SGIDF Service] updateContactIdentifiers")
     let header= new HttpHeaders()
     .set('content-type', 'application/json')
     let updateContactIdentifier = `${this.backEndUrl}/contactIdentifier`;
     if(data.methode=="delete"){
-      return this._http.delete(`${updateContactIdentifier}/delete`, {'headers':header}).pipe(
-        retry(3)
-      );
+      return this._http.delete(`${updateContactIdentifier}/delete`, {'headers':header})
     }else if(data.methode=="add"){
-      return this._http.post(`${updateContactIdentifier}/add`, data, {'headers':header}).pipe(
-        retry(3)
-      );
+      return this._http.post(`${updateContactIdentifier}/add`, data, {'headers':header})
     }else if(data.methode=="update")
      {
-     return this._http.patch(`${updateContactIdentifier}/update`, data, {'headers':header}).pipe(
-      retry(3)
-      );
+     return this._http.patch(`${updateContactIdentifier}/update`, data, {'headers':header})
     }
   }
 
   getIdentifier(data){
-    console.log(JSON.stringify(data))
+    console.log("[SGIDF Service] getIdentifier")
     let header= new HttpHeaders()
     .set('content-type', 'application/json')
     let getIdentifierUrl = `${this.backEndUrl}/get/identifier`;
-    return this._http.post(getIdentifierUrl, data, {'headers':header}).pipe(
-      retry(3)
-    );
+    return this._http.post(getIdentifierUrl, data, {'headers':header})
   }
 
   updateidentitypwd(data){
-    console.log(JSON.stringify(data))
+    console.log("[SGIDF Service] updateidentitypwd")
     let header= new HttpHeaders()
     .set('content-type', 'application/json')
     let identitypwd=`${this.backEndUrl}/get/identity/password`;
-    return this._http.patch(identitypwd,data, {'headers':header}).pipe(
-      retry(3)
-    );
-
+    return this._http.patch(identitypwd,data, {'headers':header})
   }
 
 }
