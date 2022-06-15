@@ -1,0 +1,34 @@
+<div #parent class="container-fluid">
+  <div class="row">
+    <div #div1 cdkDrag cdkDragBoundary=".parentdiv-boundary" (cdkDragMoved)="updatePosition()" style="border:5px solid coral; width:max-content; height: max-content; display:none">
+      {{results[0].name}} <hr>
+      <pre>
+        {{results[0].body |json}}
+      </pre>
+    </div>
+    <div #div2 cdkDrag cdkDragBoundary=".parentdiv-boundary" (cdkDragMoved)="updatePosition()" style="border:5px solid coral; width:max-content; height: max-content; display:none">
+      {{results[1].name}} <hr>
+      <pre>
+        {{results[1].body |json}}
+      </pre>
+    </div>
+    <div #div3 cdkDrag cdkDragBoundary=".parentdiv-boundary" (cdkDragMoved)="updatePosition()" style="border:5px solid coral; width:max-content; height: max-content; display:none">
+      {{results[2].name}} <hr>
+      <pre>
+        {{results[2].body |json}}
+      </pre>
+    </div>
+    <!--<div #div4 cdkDrag cdkDragBoundary=".parentdiv-boundary" style="border:coral; width:max-content; height: max-content; display:none">
+      {{results[3].name}} <hr>
+      <pre>
+        {{results[3].body |json}}
+      </pre>
+    </div>
+    <div #div5 cdkDrag cdkDragBoundary=".parentdiv-boundary" style="border:coral; width:max-content; height: max-content; display:none">
+      {{results[4].name}} <hr>
+      <pre>
+        {{results[4].body |json}}
+      </pre>
+    </div> -->
+  </div>
+</div>

@@ -7,6 +7,7 @@ import { SgidfComponent } from './Components/sgidf/sgidf.component';
 import { AuthGuard } from './auth.guard';
 // import { AdminRoutingModule } from './admin/admin-routing.module';
 import { HomeComponent } from './admin/home/home.component';
+import { ResultComponent } from './components/result/result.component';
 
 const routes: Routes = [
 
@@ -24,7 +25,6 @@ const routes: Routes = [
     path:'sgidf',
     component:SgidfComponent,
     canActivate:[AuthGuard]
-    
   },
 
   {
@@ -32,9 +32,14 @@ const routes: Routes = [
     //loadChildren: () => import('../app/admin/admin.module').then(m => m.AdminModule),
     component:HomeComponent,
     canLoad:[AuthGuard],
-    
   },
 
+  {
+    path:'result',
+    component:ResultComponent,
+    canActivate:[AuthGuard]
+  },
+  
   {
     path:'**',
     component:NotFoundComponent

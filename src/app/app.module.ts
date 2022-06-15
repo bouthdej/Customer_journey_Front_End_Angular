@@ -19,6 +19,7 @@ import { HomeComponent } from './admin/home/home.component';
 import { MatNativeDateModule } from '@angular/material';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBarModule } from '@angular/material';
+import { ResultComponent } from './components/result/result.component';
 
 
 @NgModule({
@@ -30,6 +31,7 @@ import { MatSnackBarModule } from '@angular/material';
     WelcomeComponent,
     NotFoundComponent,
     SgidfComponent,
+    ResultComponent,
   ],
   imports: [
     BrowserModule,
