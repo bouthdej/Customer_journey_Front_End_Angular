@@ -13,9 +13,10 @@ import { Router } from '@angular/router';
 declare let LeaderLine: any;
 
 interface idaasForm {
-  name: string;
-  value: string;
-  tooltip:string
+  name: string,
+  value: string,
+  disable:boolean,
+  tooltip?:string
 }
 
 @Component({
@@ -38,19 +39,66 @@ export class SgidfComponent implements OnInit, OnDestroy {
     { 
       name: "create new Identity",
       value: "createIdentityElement",
-      tooltip:`
-      contact identifier\nget Identitier ID`
+      disable:false,
+      tooltip:`contact identifier\nget Identitier ID`
     },
     { 
       name: "contact identifier",
       value: "contactIdentifiersElement",
+      disable:false,
       tooltip:`get Identitier ID`
     },
     { 
       name: "get Identitier ID",
       value: "getIdentifiers",
+      disable:false,
       tooltip:"none"
     },
+    {
+      name:"Login/password authenticate",
+      value:"authenticate",
+      disable:true 
+    },
+    {
+      name:"OTP authenticate",
+      value:"OTPAuthenticate",
+      disable:true 
+    },
+    {
+      name:"Login/password authenticate",
+      value:"authenticate",
+      disable:true 
+    },
+    {
+      name:"OSL authenticate",
+      value:"OSLAuthenticate",
+      disable:true 
+    },
+    {
+      name:"modify password",
+      value:"modifyPWD",
+      disable:true 
+    },
+    {
+      name:"modify profile",
+      value:"modifyProfile",
+      disable:true 
+    },
+    {
+      name:"show Session",
+      value:"showSession",
+      disable:true 
+    },
+    {
+      name:"removeSession",
+      value:"removeSession",
+      disable:true 
+    },
+    {
+      name:"remove all session",
+      value:"removeAllSession",
+      disable:true 
+    }
   ]
   elements = []
   selectedValue: string = ""
@@ -336,7 +384,8 @@ export class SgidfComponent implements OnInit, OnDestroy {
           this.elements.push(`${this.createIdentityElement}`)
           this.attachForms.push({
             name:"create identity",
-            value:"createIdentityElement"
+            value:"createIdentityElement",
+            disable:false
           })
           this.show=true
         }
@@ -349,7 +398,9 @@ export class SgidfComponent implements OnInit, OnDestroy {
           this.elements.push(`${this.contactIdentifiersElement}`)
           this.attachForms.push({
             name:"update identifier",
-            value:"contactIdentifiersElement"
+            value:"contactIdentifiersElement",
+            disable:false
+
           })
           this.show=true
         }
@@ -362,7 +413,8 @@ export class SgidfComponent implements OnInit, OnDestroy {
           this.elements.push(`${this.getIdentifiersElement}`)
           this.attachForms.push({
             name:"get identity ID",
-            value:"getIdentifiers"
+            value:"getIdentifiers",
+            disable:false
           })
           this.show=true
         }

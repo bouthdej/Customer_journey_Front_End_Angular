@@ -42,6 +42,7 @@ export class SgidfService {
 
   creatIdentity(data){
     console.log("[SGIDF Service] creatIdentity")
+    console.info(data)
     let header= new HttpHeaders()
     .set('content-type', 'application/json')
     let createIdentityUrl = `${this.backEndUrl}/identities`;

@@ -53,7 +53,7 @@
       <mat-form-field>
         <mat-label>Please choose the required forms to display:</mat-label>
         <mat-select [(ngModel)]="selectedValue" (ngModelChange)="nameChanged($event)" ngModel name="sgidfForm">
-          <mat-option  data-bs-toggle="tooltip" data-bs-placement="right" title={{sgidfForm.tooltip}} *ngFor="let sgidfForm of sgidfForms" [value]="sgidfForm.value">
+          <mat-option  data-bs-toggle="tooltip" data-bs-placement="right" title={{sgidfForm.tooltip}} *ngFor="let sgidfForm of sgidfForms" [disabled]="sgidfForm.disable" [value]="sgidfForm.value">
             {{sgidfForm.name}}  
           </mat-option>
         </mat-select>
