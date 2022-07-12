@@ -4,7 +4,6 @@
       <span class="visually-hidden">Loading...</span>
     </div>
     <div *ngIf="wait==false" style="display:inline-block; text-align: center;">
-      {{results |json}}
       <div #div1 cdkDrag cdkDragBoundary=".parentdiv-boundary" (cdkDragMoved)="updatePosition()" style="border:5px solid coral; width:max-content; height: max-content; background-color:green">
         {{results[0].name}} <hr>
         <pre>
@@ -13,21 +12,18 @@
       </div>
       <div #div2 *ngIf="results.length>=2" cdkDrag cdkDragBoundary=".parentdiv-boundary" (cdkDragMoved)="updatePosition()" style="border:5px solid coral; width:max-content; height: max-content">
         {{results[1].name}} <hr>
-        <p>div2</p>
         <pre>
           {{results[1].body | json}}
         </pre>
       </div>
       <div #div3 *ngIf="results.length>=3" cdkDrag cdkDragBoundary=".parentdiv-boundary" (cdkDragMoved)="updatePosition()" style="border:5px solid coral; width:max-content; height: max-content">
         {{results[2].name}} <hr>
-        <p>div3</p>
         <pre>
           {{results[2].body | json}}
         </pre>
       </div>
       <div #div4 *ngIf="results.length>=4" cdkDrag cdkDragBoundary=".parentdiv-boundary" style="border:coral; width:max-content; height: max-content">
         {{results[3].name}} <hr>
-        <p>div3</p>
         <pre>
           {{results[3].body | json}}
         </pre>

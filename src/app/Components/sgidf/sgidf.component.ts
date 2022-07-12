@@ -310,21 +310,6 @@ export class SgidfComponent implements OnInit, OnDestroy {
               body:createIdentityRes["body"],
               status:"pass"
             })
-            const form=this.attachTrack.filter(obj=>obj.source=="createIdentityElement")
-            console.log(form)
-            form.forEach(elem=>{
-              console.log('[createUser] update attached elem')
-              switch (elem.attached) {
-                case this.contactIdentifiersElement.nativeElement.id:
-                  console.log("patch contactIdentifiersElement value")
-                  this.modifiedContactIdentifier.get("value").patchValue(this.createFullIdentity.get("contactIdentifiers").value[0]["value"])
-                break;
-                case this.getIdentifiersElement.nativeElement.id:
-                  console.log("patch getIdentifiersElement value")
-                  this.getIdentifier.get("email").patchValue(this.createFullIdentity.get("contactIdentifiers").value[0]["value"])
-                break;
-              }
-            })
             console.log('after patch forms')
             return resolve(true)
           },
@@ -667,12 +652,10 @@ export class SgidfComponent implements OnInit, OnDestroy {
   }
 
   resultNavigation(){
-    setTimeout(() => {
-      if(this.result!=null){
-        this.dataSvc.update(this.result)
-        return this.router.navigate(["../result"])
-      }
-    },2500);
+    if(this.result!=null){
+      this.dataSvc.update(this.result)
+      return this.router.navigate(["../result"])
+    }
   }
 
   //to be updated
@@ -681,10 +664,12 @@ export class SgidfComponent implements OnInit, OnDestroy {
   //button can't be clicked if many forms showed but no link is set
   //otherwise, if ther's link, execution order will be done as per indicated in the link one by one
   run(){
+    console.log(this.executionFlow)
     this.runStatus=true
     //in case you have only one showed form
-    if(this.executionFlow.length!=null){
+    if(this.executionFlow.length!=0){
       this.singleExecution(this.executionFlow[0]).then(()=>{
+        this.resultNavigation()
       }).catch(()=>{
         console.log('execution error!')
         return this.resultNavigation()
@@ -695,79 +680,72 @@ export class SgidfComponent implements OnInit, OnDestroy {
     }
   }
 
-  runLogic(){
-    return new Promise(async (resolve, reject)=>{
-      //in case you have more then one showed form
-      //this is to extract form that have more then one attached forms at once
-      console.log(this.executionFlow)
-      let promiseRunner=[]
-      this.executionFlow.forEach(elem=>{
-        switch (elem) {
-          case "createIdentityElement":
-            promiseRunner.push(this.createNewUser(this.createFullIdentity))
-          break;
-          case "contactIdentifiersElement":
-            promiseRunner.push(this.contactIdentifiersFn(this.modifiedContactIdentifier))
-          break;
-          case "getIdentifiersElement":
-            promiseRunner.push(this.getIdentifierId(this.getIdentifier))
-          break;
-        }
-      })
-      this.runStatus=true
-      const executor=this.executionFlow[0]
-      if (executor== "createIdentityElement") {
-        this.createNewUser(this.createFullIdentity).then(()=>{
-            this.executionFlow.shift() 
-          })
-      }
-      if (executor== "contactIdentifiersElement") {
-          this.contactIdentifiersFn(this.modifiedContactIdentifier).then(()=>{
-            this.executionFlow.shift() 
-          })
-      } 
-      if (executor== "getIdentifiersElement") {
-        this.getIdentifierId(this.getIdentifier).then(()=>{
-          this.executionFlow.shift() 
-        })
-      }
-      
-      await Promise.all(promiseRunner).then(()=>{
-          console.log("execution flow promise is done")
-          return resolve(true)
-        }).catch(()=>{
-          console.log("execution flow promise is failed")
-          return reject(true)
-        })
-    })
-  }
-
   singleExecution(val){
     return new Promise((resolve, reject)=>{
       switch (val) {
         case "createIdentityElement":
           this.createNewUser(this.createFullIdentity).then(()=>{
             this.executionFlow.shift()
-            return this.run()
+            if(this.executionFlow.length>=1){
+              this.patchData(val).then(()=>{
+                return this.run()
+              })
+            }else{
+              return resolve(true)
+            }
           }).catch(()=>{
             return reject(false)
           })
           break;
         case "contactIdentifiersElement":
           this.contactIdentifiersFn(this.modifiedContactIdentifier).then(()=>{
-            return this.run()
+            this.executionFlow.shift()
+            if(this.executionFlow.length>=1){
+              this.patchData(val).then(()=>{
+                return this.run()
+              })
+            }else{
+              return resolve(true)
+            }
           }).catch(()=>{
             return reject(false)
           })
           break;
         case "getIdentifiersElement":
           this.getIdentifierId(this.getIdentifier).then(()=>{
-            return this.run()
+            this.executionFlow.shift()
+            if(this.executionFlow.length>=1){
+              this.patchData(val).then(()=>{
+                return this.run()
+              })
+            }else{
+              return resolve(true)
+            }
           }).catch(()=>{
             return reject(false)
           })
           break;
       }
+    })
+  }
+
+  patchData(val){
+    return new Promise((resolve, reject)=>{
+      const links=this.attachTrack.filter(obj=>obj.source==val)
+      this.attachTrack=this.attachTrack.filter(obj=>obj.source!=val)
+      links.forEach(link=>{
+        switch (link.attached.nativeElement.id) {
+          case this.contactIdentifiersElement.nativeElement.id:
+            console.log("modifiedContactIdentifier")
+            this.modifiedContactIdentifier.get("value").patchValue(this.createFullIdentity.get("contactIdentifiers").value[0]["value"])
+          break;
+          case this.getIdentifiersElement.nativeElement.id:
+            console.log("modifiedgetIdentifierr")
+            this.getIdentifier.get("email").patchValue(this.createFullIdentity.get("contactIdentifiers").value[0]["value"])
+          break;
+        }
+      })
+      return resolve(true)
     })
   }
 
