@@ -1,0 +1,11 @@
+{
+    "cx.server": {
+        "url": "https://securecode.itn.intraorange/",
+        "alias": "Orange checkmarx",
+        "username": "achraf.bousnina@sofrecom.com",
+        "password": "Cf3La8aEW5QP2jwyBiXYbSrOxAan3tw1AVZRRB7FdxXx9DzG",
+        "project_id": 0,
+        "team_id": 0,
+        "project_name": ""
+    }
+}
