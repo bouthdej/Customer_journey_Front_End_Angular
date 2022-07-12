@@ -130,5 +130,8 @@
       }
     }
   },
-  "defaultProject": "angular-material8-theme"
+  "defaultProject": "angular-material8-theme",
+  "cli": {
+    "analytics": "4dc4b0a0-ae01-4e94-b819-a11055fcf7ae"
+  }
 }
