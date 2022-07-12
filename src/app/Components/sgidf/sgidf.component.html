@@ -137,10 +137,16 @@
                 <div formGroupName="profile">
                   <h4>Profile</h4>
                   <p>
+                    <label for="formGroupExampleInput" class="form-label">Display name: &nbsp;</label>
+                    <input type="text" name="profileLastName" formControlName="displayName" class="input-Form">
                     <label for="formGroupExampleInput" class="form-label">First name: &nbsp;</label>
                     <input type="text" name="profileFirstName" formControlName="firstName" class="input-Form">
+                  </p>
+                  <p>
                     <label for="formGroupExampleInput" class="form-label">Last name: &nbsp;</label>
                     <input type="text" name="profileLastName" formControlName="lastName" class="input-Form">
+                    <label for="formGroupExampleInput" class="form-label">BirthDay:&nbsp;</label>
+                    <input type="date" name="profileBirthDate" formControlName="birthdate" class="input-Form">
                   </p>
                   <p>
                     <label for="formGroupExampleInput" class="form-label">civility: &nbsp;</label>
@@ -154,9 +160,6 @@
                       formControlName="gender">
                       <option *ngFor="let civility of civilities" [ngValue]="civility.id"> {{civility.val}} </option>
                     </select>
-                    &nbsp;&nbsp;
-                    <label for="formGroupExampleInput" class="form-label">BirthDay:&nbsp;</label>
-                    <input type="date" name="profileBirthDate" formControlName="birthdate" class="input-Form">
                   </p>
                 </div>
 
