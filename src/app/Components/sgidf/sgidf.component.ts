@@ -298,20 +298,22 @@ export class SgidfComponent implements OnInit, OnDestroy {
     this.getConcatIdentifiers.push(this.contactIdentifiersForms);
   }
 
-  async createNewUser(form: FormGroup) {
-    return new Promise(async (resolve,reject)=>{
+  createNewUser(form: FormGroup) {
+    return new Promise((resolve,reject)=>{
       if(this.runStatus==true){
-        this.createIdentityElementSbs = await this.SGIDFSvc.creatIdentity(form.value).subscribe(
-          async (createIdentityRes) => {
+        this.createIdentityElementSbs = this.SGIDFSvc.creatIdentity(form.value).subscribe(
+          (createIdentityRes) => {
             console.log("[sgidfComponent] createNewUser success")
             console.log("[sgidfComponent] createNewUser res: "+JSON.stringify(createIdentityRes))
-            await this.result.push({
+            this.result.push({
               name:"create Identity",
               body:createIdentityRes["body"],
               status:"pass"
             })
-            const form=this.attachTrack.filter(obj=>obj.source=="contactIdentifiersElement")
-            await form.forEach(elem=>{
+            const form=this.attachTrack.filter(obj=>obj.source=="createIdentityElement")
+            console.log(form)
+            form.forEach(elem=>{
+              console.log('[createUser] update attached elem')
               switch (elem.attached) {
                 case this.contactIdentifiersElement.nativeElement.id:
                   console.log("patch contactIdentifiersElement value")
@@ -323,12 +325,13 @@ export class SgidfComponent implements OnInit, OnDestroy {
                 break;
               }
             })
+            console.log('after patch forms')
             return resolve(true)
           },
-          async (errorRes: HttpErrorResponse) => {
+          (errorRes: HttpErrorResponse) => {
             console.log("[sgidfComponent] createNewUser failed")
             console.log(errorRes)
-            await this.result.push({
+            this.result.push({
               name:"contact Identifiers",
               body:errorRes["error"],
               status:"failed"
@@ -342,73 +345,69 @@ export class SgidfComponent implements OnInit, OnDestroy {
     })
   }
 
-  async contactIdentifiersFn(form: FormGroup) {
-    setTimeout(() => {
-      return new Promise(async (resolve,reject)=>{
-        if(this.runStatus==true){
-          if (this.action !== "") {
-            this.SGIDFSvc.updateContactIdentifiers({
-              methode: this.action,
-              body: form.value
-            })
-            .subscribe(async contactIdentifiersFnRes => {
-              console.info("[sgidfComponent] contactIdentifiersFn success")
-              await this.result.push({
-                name:"contact identifier",
-                body:JSON.parse(contactIdentifiersFnRes["body"]),
-                status:"pass"
-              })
-              return resolve(true)
-              // this.notification.success("ContactIdentifier  modifié avec succés!!!!")
-            },
-            async (contactIdentifiersFnErr: HttpErrorResponse) => {
-              console.error("[sgidfComponent] contactIdentifiersFn failed")
-              console.error(contactIdentifiersFnErr);
-              await this.result.push({
-                name:"contact identifier",
-                body:contactIdentifiersFnErr["error"],
-                status:"failed"
-              })
-              return reject(false)
-            })
-          }
-        }else{
-          return reject(false)
-        }
-      })
-    }, 500);
-  }
-
-  async getIdentifierId(form: FormGroup) {
-    setTimeout(() => {
-      return new Promise(async (resolve, reject)=>{
-        if(this.runStatus==true){
-          this.SGIDFSvc.getIdentifier(form.value).subscribe(async identifierRes => {
-            console.info("[sgidfComponent] getIdentifierId success")
-            console.info(identifierRes)
-            await this.result.push({
-              name:"get identifier",
-              body:identifierRes,
+  contactIdentifiersFn(form: FormGroup) {
+    return new Promise((resolve,reject)=>{
+      if(this.runStatus==true){
+        if (this.action !== "") {
+          this.SGIDFSvc.updateContactIdentifiers({
+            methode: this.action,
+            body: form.value
+          })
+          .subscribe(contactIdentifiersFnRes => {
+            console.info("[sgidfComponent] contactIdentifiersFn success")
+            this.result.push({
+              name:"contact identifier",
+              body:JSON.parse(contactIdentifiersFnRes["body"]),
               status:"pass"
             })
             return resolve(true)
-            // this.notification.success("get user ID")
+            // this.notification.success("ContactIdentifier  modifié avec succés!!!!")
           },
-            async (getIdentifierErr: HttpErrorResponse) => {
-              console.error("[sgidfComponent] getIdentifierId failed")
-              console.error(getIdentifierErr)
-              await this.result.push({
-                name:"get identifier",
-                body:getIdentifierErr["error"],
-                status:"failed"
-              })
-              return reject(false)
+          (contactIdentifiersFnErr: HttpErrorResponse) => {
+            console.error("[sgidfComponent] contactIdentifiersFn failed")
+            console.error(contactIdentifiersFnErr);
+            this.result.push({
+              name:"contact identifier",
+              body:contactIdentifiersFnErr["error"],
+              status:"failed"
+            })
+            return reject(false)
           })
-        }else{
-          return reject(false)
         }
-      })
-    }, 1000);
+      }else{
+        return reject(false)
+      }
+    })
+  }
+
+  getIdentifierId(form: FormGroup) {
+    return new Promise((resolve, reject)=>{
+      if(this.runStatus==true){
+        this.SGIDFSvc.getIdentifier(form.value).subscribe(identifierRes => {
+          console.info("[sgidfComponent] getIdentifierId success")
+          console.info(identifierRes)
+          this.result.push({
+            name:"get identifier",
+            body:identifierRes,
+            status:"pass"
+          })
+          return resolve(true)
+          // this.notification.success("get user ID")
+        },
+          (getIdentifierErr: HttpErrorResponse) => {
+            console.error("[sgidfComponent] getIdentifierId failed")
+            console.error(getIdentifierErr)
+            this.result.push({
+              name:"get identifier",
+              body:getIdentifierErr["error"],
+              status:"failed"
+            })
+            return reject(false)
+        })
+      }else{
+        return reject(false)
+      }
+    })
   }
 
   updatepwdIdentityFn(form: FormGroup) {
@@ -681,27 +680,18 @@ export class SgidfComponent implements OnInit, OnDestroy {
   //run one forms in case of one forms is showed
   //button can't be clicked if many forms showed but no link is set
   //otherwise, if ther's link, execution order will be done as per indicated in the link one by one
-  async run(){
-    console.log(this.executionFlow)
+  run(){
     this.runStatus=true
     //in case you have only one showed form
-    if(this.executionFlow.length==1){
-      await this.singleExecution().then(()=>{
-        console.log('execution done!')
-        return this.resultNavigation()
+    if(this.executionFlow.length!=null){
+      this.singleExecution(this.executionFlow[0]).then(()=>{
       }).catch(()=>{
         console.log('execution error!')
         return this.resultNavigation()
       })
     }else{
       console.log('runLogic execution!!!')
-      await this.runLogic().then(()=>{
-        console.log('runLogic done!!!')
-        return this.resultNavigation()
-      }).catch(()=>{
-        console.log('runLogic error!!!')
-        return this.resultNavigation()
-      })
+      return this.resultNavigation()
     }
   }
 
@@ -711,7 +701,7 @@ export class SgidfComponent implements OnInit, OnDestroy {
       //this is to extract form that have more then one attached forms at once
       console.log(this.executionFlow)
       let promiseRunner=[]
-      await this.executionFlow.forEach(elem=>{
+      this.executionFlow.forEach(elem=>{
         switch (elem) {
           case "createIdentityElement":
             promiseRunner.push(this.createNewUser(this.createFullIdentity))
@@ -725,7 +715,24 @@ export class SgidfComponent implements OnInit, OnDestroy {
         }
       })
       this.runStatus=true
-      Promise.allSettled(promiseRunner).then(()=>{
+      const executor=this.executionFlow[0]
+      if (executor== "createIdentityElement") {
+        this.createNewUser(this.createFullIdentity).then(()=>{
+            this.executionFlow.shift() 
+          })
+      }
+      if (executor== "contactIdentifiersElement") {
+          this.contactIdentifiersFn(this.modifiedContactIdentifier).then(()=>{
+            this.executionFlow.shift() 
+          })
+      } 
+      if (executor== "getIdentifiersElement") {
+        this.getIdentifierId(this.getIdentifier).then(()=>{
+          this.executionFlow.shift() 
+        })
+      }
+      
+      await Promise.all(promiseRunner).then(()=>{
           console.log("execution flow promise is done")
           return resolve(true)
         }).catch(()=>{
@@ -735,26 +742,27 @@ export class SgidfComponent implements OnInit, OnDestroy {
     })
   }
 
-  singleExecution(){
+  singleExecution(val){
     return new Promise((resolve, reject)=>{
-      switch (this.executionFlow[0]) {
+      switch (val) {
         case "createIdentityElement":
           this.createNewUser(this.createFullIdentity).then(()=>{
-            return resolve(true)
+            this.executionFlow.shift()
+            return this.run()
           }).catch(()=>{
             return reject(false)
           })
           break;
         case "contactIdentifiersElement":
           this.contactIdentifiersFn(this.modifiedContactIdentifier).then(()=>{
-            return resolve(true)
+            return this.run()
           }).catch(()=>{
             return reject(false)
           })
           break;
         case "getIdentifiersElement":
           this.getIdentifierId(this.getIdentifier).then(()=>{
-            return resolve(true)
+            return this.run()
           }).catch(()=>{
             return reject(false)
           })
