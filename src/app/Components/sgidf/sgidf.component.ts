@@ -179,13 +179,13 @@ export class SgidfComponent implements OnInit, OnDestroy {
   runStatus:boolean=false
   // executor:executor
 
-  @ViewChild("parent", { static: false }) parentDiv: ElementRef
-  @ViewChild("row", { static: false }) rowElem: ElementRef
-  @ViewChild('createIdentityElement', { read: ElementRef, static: false }) createIdentityElement: ElementRef;
-  @ViewChild('IdentifiersElem', { read: ElementRef, static: false }) IdentifiersElem: ElementRef;
-  @ViewChild('contactIdentifiersElem', { read: ElementRef, static: false }) contactIdentifiersElem: ElementRef;
-  @ViewChild('contactIdentifiersElement', { read: ElementRef, static: false }) contactIdentifiersElement: ElementRef;
-  @ViewChild('getIdentifiersElement', { read: ElementRef, static: false }) getIdentifiersElement: ElementRef;
+  @ViewChild("parent") parentDiv: ElementRef
+  @ViewChild("row") rowElem: ElementRef
+  @ViewChild('createIdentityElement', { read: ElementRef }) createIdentityElement: ElementRef;
+  @ViewChild('IdentifiersElem', { read: ElementRef }) IdentifiersElem: ElementRef;
+  @ViewChild('contactIdentifiersElem', { read: ElementRef }) contactIdentifiersElem: ElementRef;
+  @ViewChild('contactIdentifiersElement', { read: ElementRef }) contactIdentifiersElement: ElementRef;
+  @ViewChild('getIdentifiersElement', { read: ElementRef }) getIdentifiersElement: ElementRef;
 
   constructor(
     private renderer: Renderer2,

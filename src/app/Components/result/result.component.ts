@@ -41,11 +41,11 @@ export class ResultComponent implements OnInit, AfterViewInit {
     })
   }
 
-  @ViewChild("div1", { static: false }) div1: ElementRef
-  @ViewChild("div2", { static: false }) div2: ElementRef
-  @ViewChild("div3", { static: false }) div3: ElementRef
-  @ViewChild("div4", { static: false }) div4: ElementRef
-  @ViewChild("div5", { static: false }) div5: ElementRef
+  @ViewChild("div1") div1: ElementRef
+  @ViewChild("div2") div2: ElementRef
+  @ViewChild("div3") div3: ElementRef
+  @ViewChild("div4") div4: ElementRef
+  @ViewChild("div5") div5: ElementRef
 
   ngAfterViewInit(): void {
     console.log(`length is ${JSON.stringify(this.results)}`)
