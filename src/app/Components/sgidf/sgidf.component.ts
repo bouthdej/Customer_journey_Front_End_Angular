@@ -48,6 +48,7 @@ interface executor{
 export class SgidfComponent implements OnInit, OnDestroy {
 
   createIdentityElementSbs = new Subscription
+  private userIdentifier:string=""
 
   zoom=1
   error: boolean = false
@@ -169,11 +170,6 @@ export class SgidfComponent implements OnInit, OnDestroy {
   action: string = ""
 
   showAttached:boolean=false
-  createIdentityElementObj={
-    name:"create identity",
-    value:"createIdentityElement",
-    links: "email"
-  }
 
   executionStatus:boolean=true
   runStatus:boolean=false
@@ -239,7 +235,7 @@ export class SgidfComponent implements OnInit, OnDestroy {
     return this.createFullIdentity.controls["identifiers"] as FormArray;
   }
 
-  // Create user -Full identity- forms
+  // Add, update or delete contact identifier
   contactIdentifiersForms = this.formBuilder.group({
     value: ['achraf.bousninsa@sofrecom.com', [Validators.required, Validators.email || Validators.minLength(8)]],
     isPassword: [false],
@@ -248,7 +244,7 @@ export class SgidfComponent implements OnInit, OnDestroy {
 
   // Create user -Full identity- forms
   modifiedContactIdentifier = this.formBuilder.group({
-    value: ['achraf.bousninsa@sofrecom.com', [Validators.required, Validators.email || Validators.minLength(8)]],
+    value: [null, [Validators.required, Validators.email || Validators.minLength(8)]],
     isPassword: [false],
     type: ['email', [Validators.minLength(5), Validators.maxLength(6), Validators.required]],
   })
@@ -259,7 +255,7 @@ export class SgidfComponent implements OnInit, OnDestroy {
     provider: ['sandbox', [Validators.required, Validators.email || Validators.minLength(8)]],
   })
 
-  // Create user -Full identity- forms
+  // get user id 
   getIdentifier = this.formBuilder.group({
     email: ['', [Validators.required, Validators.email]],
   })
@@ -300,77 +296,84 @@ export class SgidfComponent implements OnInit, OnDestroy {
 
   createNewUser(form: FormGroup) {
     return new Promise((resolve,reject)=>{
-      if(this.runStatus==true){
-        this.createIdentityElementSbs = this.SGIDFSvc.creatIdentity(form.value).subscribe(
-          (createIdentityRes) => {
-            console.log("[sgidfComponent] createNewUser success")
-            console.log("[sgidfComponent] createNewUser res: "+JSON.stringify(createIdentityRes))
-            this.result.push({
-              name:"create Identity",
-              body:createIdentityRes["body"],
-              status:"pass"
-            })
-            console.log('after patch forms')
-            return resolve(true)
-          },
-          (errorRes: HttpErrorResponse) => {
-            console.log("[sgidfComponent] createNewUser failed")
-            console.log(errorRes)
-            this.result.push({
-              name:"contact Identifiers",
-              body:errorRes["error"],
-              status:"failed"
-            })
-            return reject(false)
-          }
-        )
-      }else{
-        return reject(false)
-      }
+      this.createIdentityElementSbs =this.SGIDFSvc.creatIdentity(form.value).subscribe(
+        (createIdentityRes) => {
+          console.log("[sgidfComponent] createNewUser success")
+          console.log("[sgidfComponent] createNewUser res: "+JSON.stringify(createIdentityRes))
+          this.result.push({
+            name:"create Identity",
+            body:createIdentityRes["body"],
+            status:"pass"
+          })
+          console.log('after patch forms')
+          return resolve(true)
+        },
+        (errorRes: HttpErrorResponse) => {
+          console.log("[sgidfComponent] createNewUser failed")
+          console.log(errorRes)
+          this.result.push({
+            name:"contact Identifiers",
+            body:errorRes["error"],
+            status:"failed"
+          })
+          return reject(false)
+        }
+      )
+      // if(form.status=="VALID"){
+      //   console.log("step1")
+      // }else{
+      //   this.error=true
+      //   this.errorMsg="create identity form is not valid"
+      // }
     })
   }
 
   contactIdentifiersFn(form: FormGroup) {
     return new Promise((resolve,reject)=>{
-      if(this.runStatus==true){
-        if (this.action !== "") {
-          this.SGIDFSvc.updateContactIdentifiers({
-            methode: this.action,
-            body: form.value
+      if (this.action !== "") {
+        resolve(true)
+        this.SGIDFSvc.updateContactIdentifiers({
+          methode: this.action,
+          value: form.controls.value.value,
+          type:form.controls.type.value
+        })
+        .subscribe(contactIdentifiersFnRes => {
+          console.info("[sgidfComponent] contactIdentifiersFn success")
+          this.result.push({
+            name:"contact identifier",
+            body:JSON.parse(contactIdentifiersFnRes["body"]),
+            status:"pass"
           })
-          .subscribe(contactIdentifiersFnRes => {
-            console.info("[sgidfComponent] contactIdentifiersFn success")
-            this.result.push({
-              name:"contact identifier",
-              body:JSON.parse(contactIdentifiersFnRes["body"]),
-              status:"pass"
-            })
-            return resolve(true)
-            // this.notification.success("ContactIdentifier  modifié avec succés!!!!")
-          },
-          (contactIdentifiersFnErr: HttpErrorResponse) => {
-            console.error("[sgidfComponent] contactIdentifiersFn failed")
-            console.error(contactIdentifiersFnErr);
-            this.result.push({
-              name:"contact identifier",
-              body:contactIdentifiersFnErr["error"],
-              status:"failed"
-            })
-            return reject(false)
+          return resolve(true)
+          // this.notification.success("ContactIdentifier  modifié avec succés!!!!")
+        },
+        (contactIdentifiersFnErr: HttpErrorResponse) => {
+          console.error("[sgidfComponent] contactIdentifiersFn failed")
+          console.error(contactIdentifiersFnErr);
+          this.result.push({
+            name:"contact identifier",
+            body:contactIdentifiersFnErr["error"],
+            status:"failed"
           })
-        }
-      }else{
-        return reject(false)
+          return reject(false)
+        })
       }
+      // if(form.valid==true){
+      // }else{
+      //   this.error=true
+      //   this.errorMsg="update contact identifier form is not valid"
+      // }
     })
   }
 
   getIdentifierId(form: FormGroup) {
+    console.log(form)
     return new Promise((resolve, reject)=>{
-      if(this.runStatus==true){
+      if(form.valid==true){
         this.SGIDFSvc.getIdentifier(form.value).subscribe(identifierRes => {
           console.info("[sgidfComponent] getIdentifierId success")
           console.info(identifierRes)
+          this.userIdentifier=identifierRes["id"]
           this.result.push({
             name:"get identifier",
             body:identifierRes,
@@ -390,7 +393,8 @@ export class SgidfComponent implements OnInit, OnDestroy {
             return reject(false)
         })
       }else{
-        return reject(false)
+        this.error=true
+        this.errorMsg="get identifier form is not valid"
       }
     })
   }
@@ -449,7 +453,7 @@ export class SgidfComponent implements OnInit, OnDestroy {
           this.insertExecutionFlow(["getIdentifiersElement"])
           this.attachForms.push({
             name:"get identity ID",
-            value:"getIdentifiers",
+            value:"getIdentifiersElement",
             disable:false
           })
           this.show=true
@@ -490,15 +494,16 @@ export class SgidfComponent implements OnInit, OnDestroy {
             }
           )
           this.transmittedInfos.push("email", "mobile")
-          break;
-        case "contactIdentifiersElement":
+        break;
+
+        case "getIdentifiersElement":
           this.allowedForms.push(
             {
-              name:"get identity ID",
-              value:"getIdentifiersElement"
+              name:"update identifier",
+              value:"contactIdentifiersElement"
             })
-            this.transmittedInfos.push("email")
-            break;
+            this.transmittedInfos.push("email", "id")
+        break;
       }
     }
   }
@@ -589,21 +594,6 @@ export class SgidfComponent implements OnInit, OnDestroy {
             this.attachedNumber+=1
           })
         break;
-        case "contactIdentifiersElementgetIdentifiersElement":
-          this.canAttach(["contactIdentifiersElement", "getIdentifiersElement"]).then(()=>{
-            this.line[this.attachedNumber]=new LeaderLine(this.contactIdentifiersElement.nativeElement, this.getIdentifiersElement.nativeElement, {color: 'black', size: 4, endLabel: `${this.attachedNumber}: ${this.transmittedInfo}`});
-            this.attachTrack.push({
-              index:this.attachedNumber,
-              attach:this.contactIdentifiersElement,
-              attached:this.getIdentifiersElement,
-              link:`${this.attachedNumber}:${this.transmittedInfo}`,
-              source:"contactIdentifiersElement",
-            })
-            this.dettachTracks.push(`${this.attachedNumber}:${this.transmittedInfo}`)
-            this.detachState=true
-            this.attachedNumber+=1
-          })
-        break;
         case "getIdentifiersElementcontactIdentifiersElement":
           this.canAttach(["getIdentifiersElement","contactIdentifiersElement"]).then(()=>{
             this.line[this.attachedNumber]=new LeaderLine(this.getIdentifiersElement.nativeElement, this.contactIdentifiersElement.nativeElement, {color: 'black', size: 4, endLabel: `${this.attachedNumber}: ${this.transmittedInfo}`});
@@ -620,7 +610,70 @@ export class SgidfComponent implements OnInit, OnDestroy {
           })
         break;
       }
+      this.allowedForms=[]
+      this.transmittedInfos=[]
     }
+  }
+
+  close(id){
+    console.log('close forms')
+    console.log(this.executionFlow)
+    switch (id) {
+      case "createIdentityElement":
+        console.log('reset createIdentityElement')
+        this.createFullIdentity.reset()
+        this.renderer.setStyle(this.createIdentityElement.nativeElement,"display", "none")
+        this.renderer.setStyle(this.IdentifiersElem.nativeElement,"display", "none")
+        this.renderer.setStyle(this.contactIdentifiersElem.nativeElement,"display", "none")
+        this.updateExecutionFlow(id)
+      break;
+
+      case "contactIdentifiersElement":
+        console.log('reset contactIdentifiersElement')
+        this.createFullIdentity.reset()
+        this.renderer.setStyle(this.contactIdentifiersElement.nativeElement,"display", "none")
+        this.updateExecutionFlow(id)
+      break;
+
+      case "getIdentifiersElement":
+        console.log('reset getIdentifiersElement')
+        this.createFullIdentity.reset()
+        this.renderer.setStyle(this.getIdentifiersElement.nativeElement,"display", "none")
+        this.updateExecutionFlow(id)
+      break;
+    }
+  }
+
+  //to be corrected
+  updateExecutionFlow(id){
+    console.log(`id is ${id}`)
+    console.log(this.attachTrack)
+    this.attachForms=this.attachForms.filter(elem=>elem.value!=id)
+    const index=this.executionFlow.indexOf(id)
+    this.executionFlow.splice(index,1)
+    this.attachTrack.forEach(obj=>{
+      console.log(obj.attach.nativeElement.id)
+      if(obj.attach.nativeElement.id==id){
+        console.log('attach exist!!!')
+        this.line[parseInt(obj.link.split(':')[0])].remove()
+        this.dettachTracks=this.dettachTracks.filter(elem=>elem!=obj.link)
+        this.attachedNumber-=1
+        this.dettachTracks.forEach(elem=>{
+          elem=`${parseInt(elem.split(':')[0])-1}: ${elem.split(':')[1]}`
+        })
+        this.attachTrack.filter(obj=>obj.attach.nativeElement.id!=id)
+      }
+      if(obj.attached.nativeElement.id==id){
+        console.log('attached exist!!!')
+        const linIndex=parseInt(obj.link.split(':')[0])
+        this.dettachedVal=obj.link
+        this.line[linIndex].remove()
+        this.dettachTracks=this.dettachTracks.filter(elem=>elem!=obj.link)
+        this.attachedNumber-=1
+      }
+    })
+    // this.attachTrack=this.attachTrack.filter(obj=>obj.source!=id)
+    this.detach()
   }
 
   insertExecutionFlow(arg){
@@ -638,16 +691,20 @@ export class SgidfComponent implements OnInit, OnDestroy {
       this.attachTrack=this.attachTrack.filter(elem=>elem.link!=this.dettachedVal)
       this.dettachTracks=this.dettachTracks.filter(elem=>elem!=this.dettachedVal)
       this.line[index].remove()
-      for (let i = index-1; i < this.attachTrack.length; i++) {
-        const info=this.attachTrack[i].link
-        console.log(info.split(':')[1])
-        this.attachTrack[i].link=`${i+1}:${info.split(':')[1]}`;
-        this.dettachTracks[i]=`${i+1}:${info.split(':')[1]}`;
-      }
-      this.attachedNumber-=1
-      if(this.attachTrack.length==0){
-        this.detachState=false
-      }
+      this.updateIndex(index)
+    }
+  }
+
+  updateIndex(index){
+    for (let i = index-1; i < this.attachTrack.length; i++) {
+      const info=this.attachTrack[i].link
+      console.log(info.split(':')[1])
+      this.attachTrack[i].link=`${i+1}:${info.split(':')[1]}`;
+      this.dettachTracks[i]=`${i+1}:${info.split(':')[1]}`;
+    }
+    this.attachedNumber-=1
+    if(this.attachTrack.length==0){
+      this.detachState=false
     }
   }
 
@@ -664,13 +721,26 @@ export class SgidfComponent implements OnInit, OnDestroy {
   //button can't be clicked if many forms showed but no link is set
   //otherwise, if ther's link, execution order will be done as per indicated in the link one by one
   run(){
-    console.log(this.executionFlow)
     this.runStatus=true
     //in case you have only one showed form
-    if(this.executionFlow.length!=0){
-      this.singleExecution(this.executionFlow[0]).then(()=>{
+
+    if(this.executionFlow.length>1){
+      this.attachTrack.forEach(obj=>{
+        this.singleExecution(obj.source)
+        .then(()=>{
+          this.resultNavigation()
+        })
+        .catch(()=>{
+          console.log('execution error!')
+          return this.resultNavigation()
+        })
+      })
+    }else if(this.executionFlow.length==1){
+      this.singleExecution(this.executionFlow[0])
+      .then(()=>{
         this.resultNavigation()
-      }).catch(()=>{
+      })
+      .catch(()=>{
         console.log('execution error!')
         return this.resultNavigation()
       })
@@ -681,11 +751,13 @@ export class SgidfComponent implements OnInit, OnDestroy {
   }
 
   singleExecution(val){
+    console.log(val)
     return new Promise((resolve, reject)=>{
       switch (val) {
         case "createIdentityElement":
+          console.log("createIdentityElement case")
           this.createNewUser(this.createFullIdentity).then(()=>{
-            this.executionFlow.shift()
+            this.executionFlow.splice(this.executionFlow.indexOf(val),1)
             if(this.executionFlow.length>=1){
               this.patchData(val).then(()=>{
                 return this.run()
@@ -698,8 +770,9 @@ export class SgidfComponent implements OnInit, OnDestroy {
           })
           break;
         case "contactIdentifiersElement":
+          console.log("contactIdentifiersElement case")
           this.contactIdentifiersFn(this.modifiedContactIdentifier).then(()=>{
-            this.executionFlow.shift()
+            this.executionFlow.splice(this.executionFlow.indexOf(val),1)
             if(this.executionFlow.length>=1){
               this.patchData(val).then(()=>{
                 return this.run()
@@ -707,13 +780,15 @@ export class SgidfComponent implements OnInit, OnDestroy {
             }else{
               return resolve(true)
             }
-          }).catch(()=>{
+          }).catch((error)=>{
+            console.log(error)
             return reject(false)
           })
           break;
         case "getIdentifiersElement":
+          console.log("getIdentifiersElement case")
           this.getIdentifierId(this.getIdentifier).then(()=>{
-            this.executionFlow.shift()
+            this.executionFlow.splice(this.executionFlow.indexOf(val),1)
             if(this.executionFlow.length>=1){
               this.patchData(val).then(()=>{
                 return this.run()
@@ -737,7 +812,7 @@ export class SgidfComponent implements OnInit, OnDestroy {
         switch (link.attached.nativeElement.id) {
           case this.contactIdentifiersElement.nativeElement.id:
             console.log("modifiedContactIdentifier")
-            this.modifiedContactIdentifier.get("value").patchValue(this.createFullIdentity.get("contactIdentifiers").value[0]["value"])
+            this.modifiedContactIdentifier.get("value").patchValue(this.userIdentifier)
           break;
           case this.getIdentifiersElement.nativeElement.id:
             console.log("modifiedgetIdentifierr")
@@ -751,9 +826,7 @@ export class SgidfComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.createIdentityElementSbs.unsubscribe()
-    for (const track of this.attachTrack) {
-      this.line[track.index].remove()
-    }
+    this.line.forEach(elem=>elem.remove())
   }
 
 }

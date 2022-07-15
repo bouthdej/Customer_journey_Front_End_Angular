@@ -15,10 +15,6 @@
           </div>
           <div class="modal-body text-body">
             <label>Attach from:</label> <br>
-            <input class="form-check-input" type="radio" name="attachVal" id="attachVal">
-            <label class="form-check-label" for="attachVal">
-              None
-            </label>
             <div class="form-check text-body" *ngFor="let attachForm of attachForms">
               <input #radioEvent class="form-check-input text-body" type="radio" name="attachVal" id="attachVal" (click)="updateAttachedVal(attachForm.value)">
               <label class="form-check-label text-body" for="attachVal">
@@ -127,8 +123,8 @@
           </div>
           
           <!-- Create Identity -->
-          <div #createIdentityElement id="createIdentityElement" class="createIdentityElement col-sm-2 col-md-4 col-lg-3 bg-primary ml-2" cdkDrag
-            (cdkDragMoved)="updatePosition()" cdkDragBoundary=".parentdiv-boundary" style="width: 540px; height:max-content; display:none; position:relative; margin: 2rem;">
+          <div #createIdentityElement id="createIdentityElement" class="createIdentityElement col-sm-2 col-md-4 col-lg-3 bg-primary ml-2" cdkDrag (cdkDragMoved)="updatePosition()" cdkDragBoundary=".parentdiv-boundary" style="width: 540px; height:max-content; display:none; position:relative; margin: 2rem;">
+            <button type="button" (click)="close('createIdentityElement')" class="btn-close" data-bs-dismiss="modal" style="color:black; justify-content: end; right: 0; position: absolute;"><span class="visually-hidden">Close</span></button>
             <form [formGroup]="createFullIdentity" (ngSubmit)="createNewUser(createFullIdentity)" novalidate>
               <h4 class="titleCreateIdentity"> Create identity</h4><hr>
               <!-- Create Identity Profile-->
@@ -214,6 +210,7 @@
           <!-- CRUD Contact Identifiers Email/Mobile -->
           <div #contactIdentifiersElement id="contactIdentifiersElement" class="contactIdentifiersElement col-sm-2 col-md-4 col-lg-3 ml-2 bg-primary" cdkDrag
             (cdkDragMoved)="updatePosition()" cdkDragBoundary=".parentdiv-boundary" style="height:max-content; display:none; position:relative; margin: 2rem;">
+            <button type="button" (click)="close('contactIdentifiersElement')" class="btn-close" data-bs-dismiss="modal" style="color:black; justify-content: end; right: 0; position: absolute;"><span class="visually-hidden">Close</span></button>
             <form [formGroup]="modifiedContactIdentifier" (ngSubmit)="contactIdentifiersFn(modifiedContactIdentifier)"
               novalidate>
               <h4 class="titleCreateIdentity">Get Contact Identifier</h4>
@@ -248,6 +245,7 @@
           <!-- CRUD get Identifier ID -->
           <div #getIdentifiersElement id="getIdentifiersElement" class="getIdentifiersElement col-sm-2 col-md-4 col-lg-3 bg-primary ml-2" cdkDrag (cdkDragMoved)="updatePosition()"
             cdkDragBoundary=".parentdiv-boundary" style="height:max-content; display:none; position:relative; margin: 2rem;">
+            <button type="button" (click)="close('getIdentifiersElement')" class="btn-close" data-bs-dismiss="modal" style="color:black; justify-content: end; right: 0; position: absolute;"><span class="visually-hidden">Close</span></button>
             <form [formGroup]="getIdentifier" (ngSubmit)="getIdentifierId(getIdentifier)" novalidate>
               <h4 class="titleCreateIdentity">Get Identity</h4>
               <hr>
