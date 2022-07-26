@@ -51,11 +51,12 @@ export class SgidfService {
 
   updateContactIdentifiers(data){
     console.log("[SGIDF Service] updateContactIdentifiers")
+    console.log(data)
     let header= new HttpHeaders()
     .set('content-type', 'application/json')
     let updateContactIdentifier = `${this.backEndUrl}/contactIdentifier`;
     if(data.methode=="delete"){
-      return this._http.delete(`${updateContactIdentifier}/delete`, {'headers':header})
+      return this._http.delete(`${updateContactIdentifier}/delete/type/${data.type}/userid/${data.value}`, {'headers':header})
     }else if(data.methode=="add"){
       return this._http.post(`${updateContactIdentifier}/add`, data, {'headers':header})
     }else if(data.methode=="update")
